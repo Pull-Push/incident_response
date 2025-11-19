@@ -1,0 +1,10 @@
+GET requests to 	https://api.weather.gov/points/40.948020935058594,-74.05921173095703 - gets info for shop in paramus
+
+Pull info from api to Lat/Long coorrdinates.
+TODO! Need to find a way to get proper lat and long coorrdinates!! Can mapping do this for me when getting addresses?
+
+response.properties.forecast gives the proper forcast for the area for the next few days
+response.properties.forecastHourly gives the next 3 hours
+
+in forecast, number = id, name = when it is,  icon displays images. use 'size=small', 'size=medium' or 'size=large', other sizes DO NOT WORK
+

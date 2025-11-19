@@ -1,0 +1,6 @@
+More than likely will need to use MapBox GL JS to pull multiple clients/customers
+Need to provide lat/long info for each customer to get location. need to figure out how to manage multiple sites per customer
+maybe make a 'sub site' table if required?
+
+
+This will be complicated as shit. need to investigate further
