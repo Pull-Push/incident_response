@@ -1,11 +1,14 @@
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import Home from './pages/Home'
 import './App.css'
-
 function App() {
 
   return (
-    <div className='app_main'>
-        <h1>ICR - Incident Command & Response</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Home />}/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
