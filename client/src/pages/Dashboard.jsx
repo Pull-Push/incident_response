@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,  } from "react";
 import { getWeather } from "../services/api";
+
 
 
 export default function Dashboard(){
@@ -7,6 +8,7 @@ const [weather, setWeather ] = useState(null)
 const [location, setLocation] = useState(null)
 const [loading, setLoading ] = useState(true)
 const [error, setError ] = useState(null);
+
 
 useEffect(()=>{
     const fetchWeather = async () =>{
@@ -26,6 +28,7 @@ useEffect(()=>{
     fetchWeather();
 },[])
 
+
     if (loading) return <div> Data Loading</div>
     if(error) return <div>Error: {error}</div>
 
@@ -42,6 +45,7 @@ useEffect(()=>{
                 </div>
             ))}
             {/* <pre>{JSON.stringify(weather, null, 2)}</pre> */}
+
         </div>
     )
 }
