@@ -4,6 +4,7 @@ import { getWeather } from "../services/api";
 
 export default function Dashboard(){
 const [weather, setWeather ] = useState(null)
+const [location, setLocation] = useState(null)
 const [loading, setLoading ] = useState(true)
 const [error, setError ] = useState(null);
 
@@ -12,7 +13,9 @@ useEffect(()=>{
         try {
             setLoading(true);
             const data = await getWeather();
-            setWeather(data)
+            console.log('data', data)
+            setWeather(data.local)
+            setLocation(data.locationInfo)
         }catch(err){
             setError(err.message)
             console.error("error fetching weather", err)
@@ -29,7 +32,16 @@ useEffect(()=>{
     return(
         <div className="dashMain">
             <h1>Welcome to the dashboard</h1>
-            <pre>{JSON.stringify(weather, null, 2)}</pre>
+            <h2>Weather for {location.name}, {location.state}</h2>
+            {weather.map((day, index) =>(
+                <div key={index}>
+                    <p>{day.name}</p>
+                    <img src={day.icon} alt={day.shortForecast} />
+                    <p>{day.temperature} {day.temperatureUnit}</p>
+                    <p>{day.detailedForecast}</p>
+                </div>
+            ))}
+            {/* <pre>{JSON.stringify(weather, null, 2)}</pre> */}
         </div>
     )
 }
