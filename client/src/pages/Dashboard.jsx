@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef  } from "react";
 import { getWeather } from "../services/api";
 
-
-
 import maplibregl, { Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 

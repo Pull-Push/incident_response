@@ -1,8 +1,11 @@
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
+const pool = require('./db.js');
 
+// IMPORT ROUTES
 const incidentRoutes = require('./routes/incidents')
+const customerRoutes = require('./routes/customers')
 
 const app = express()
 const PORT = process.env.PORT || 5050
@@ -29,15 +32,22 @@ app.use(cors({
 app.use(express.json())
 
 app.use('/api', incidentRoutes)
+app.use('/api', customerRoutes)
+
+
 //test route
 app.get('/api', (req, res) =>{
     res.json({message: 'ICR API RUNNING'})
 })
 
-
-
-
-
+// DATABASE TEST CONNECTION
+// pool.query('SELECT NOW()', (err, res) => {
+//     if (err) {
+//         console.error('❌ Database connection failed:', err);
+//     } else {
+//         console.log('✅ Database connected successfully at:', res.rows[0].now);
+//     }
+// });
 
 //START SERVER 
 app.listen(PORT, () =>{
