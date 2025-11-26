@@ -6,7 +6,7 @@ async function getLocalWeather(){
     const [lat, lon] = ['40.948020935058594','-74.05921173095703'] //Paramus, NJ Test
     // const [lat, lon] = ['34.0194704','-118.491227'] // Santa Monica, CA Test
     const gridResponse = await axios.get(
-        `http://api.weather.gov/points/${lat},${lon}`
+        `https://api.weather.gov/points/${lat},${lon}`
     );
     // console.log('grid', gridResponse.data)
     // console.log('forecast URL', gridResponse.data.properties.forecast)

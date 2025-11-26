@@ -23,6 +23,7 @@ app.use(cors({
         )
     },
     credentials: true
+    // origin: '*' - FOR MOBILE TESTING
 }))
 
 app.use(express.json())
@@ -40,5 +41,5 @@ app.get('/api', (req, res) =>{
 
 //START SERVER 
 app.listen(PORT, () =>{
-    console.log(`SERVER IS RUNNING ON LOCALHOST:${PORT}`)
+    console.log(`SERVER IS RUNNING ON ${PORT}`)
 })

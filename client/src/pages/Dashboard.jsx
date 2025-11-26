@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef  } from "react";
 import { getWeather } from "../services/api";
 
+
+
 import maplibregl, { Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -33,7 +35,7 @@ useEffect(()=>{
 
 
 },[])
-// BELOW WORKS FOR STATIC MAP!
+// BELOW WORKS FOR MAP!
 useEffect(() =>{
     if (map.current) return;
     if(!mapContainer.current) return;
@@ -42,16 +44,30 @@ useEffect(() =>{
         // style: 'https://demotiles.maplibre.org/style.json',
         style: 'https://tiles.openfreemap.org/styles/bright',
         center: [-74.059, 40.948],
-        zoom: 11
+        zoom: 10
     });
 
     //Add Navigation Control
     map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
 
     //Add A Marker
-    new maplibregl.Marker()
+    const marker = new maplibregl.Marker({draggable:true})
     .setLngLat([-74.06880195032551, 40.94538141690225])
     .addTo(map.current)
+    
+    function onDragEnd(){
+        const lngLat = marker.getLngLat()
+        if (confirm('Open in Google Maps?') == true) {
+            window.open(`https://www.google.com/maps/search/?api=1&query=${lngLat.lat},${lngLat.lng}`, '_blank', 'noopener,noreferrer');
+        }
+    }
+    marker.on('dragend', onDragEnd)
+
+    // WORKS FOR MULTIPLE MAP MARKERS
+    // new maplibregl.Marker()
+    // .setLngLat([-74.2776212, 41.006709])
+    // .addTo(map.current)
+
 
     //geoloacte
     map.current.addControl(
