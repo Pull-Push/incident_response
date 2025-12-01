@@ -3,6 +3,7 @@ import { getCustomers } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
+
 export default function Customers(){
     const [customers, setCustomers ] = useState([])
     const [loading, setLoading ] = useState(true)
