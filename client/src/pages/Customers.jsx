@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react"
 import { getCustomers } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import NavBar from "../components/NavBar";
 
 export default function Customers(){
     const [customers, setCustomers ] = useState([])
     const [loading, setLoading ] = useState(true)
     const [error, setError ] = useState(null);
     
+    const navigate = useNavigate()
+
     useEffect(() => {
         const fetchCustomers = async () =>{
             try {
@@ -27,7 +31,9 @@ export default function Customers(){
 
     return(
         <div className="customer-main">
+            <NavBar/>
             <h1>This is the main customer page</h1>
+            <button className="btn btn-primart" onClick={() => navigate('/create/customer')}>Create a Customer</button>
             <h3>customer info goes below here</h3>
             {customers.map((customer, key) =>(
                 <p key={key}>{customer.name} {customer.dept}</p>

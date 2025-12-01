@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef  } from "react";
 import { getWeather } from "../services/api";
+import NavBar from "../components/NavBar";
 
 import maplibregl, { Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -88,6 +89,7 @@ useEffect(() =>{
 
     return(
         <div className="dashMain">
+            <NavBar/>
             <h1>Welcome to the dashboard</h1>
             <h2>Weather for {location.name}, {location.state}</h2>
             {weather.map((day, index) =>(
