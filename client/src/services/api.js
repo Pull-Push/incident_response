@@ -3,7 +3,8 @@ const API_BASE_URL = 'http://localhost:5050'
 
 
 //GET DASHBOARD INFO WEATHER - MAP - INCIDENTS
-export const getWeather = async () =>{
+export const getDash = async (weatherLocation) =>{
+    console.log('api', weatherLocation)
     const response = await fetch(`${API_BASE_URL}/api/dashboard`)
     if(!response.ok) throw new Error('Failed to fetch weather')
         return response.json()

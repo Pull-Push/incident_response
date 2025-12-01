@@ -39,6 +39,7 @@ export default function CreateCustomer(){
             long:long
         }
         createCustomer(newCustomer)
+        navigate('/customers')
     }
     return(
         <div className="customerCreateMain">

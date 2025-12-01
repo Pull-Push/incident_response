@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { getCustomers } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 
@@ -37,7 +37,11 @@ export default function Customers(){
             <button className="btn btn-primart" onClick={() => navigate('/create/customer')}>Create a Customer</button>
             <h3>customer info goes below here</h3>
             {customers.map((customer, key) =>(
-                <p key={key}>{customer.name} {customer.dept}</p>
+                <div key={key}>
+                    <p>{customer.id} {customer.name} {customer.dept}</p>
+                    <Link to={`view/${customer.id}`}>View</Link>
+                    <Link to={`edit/${customer.id}`}>Edit</Link>
+                </div>
             ))}
         </div>
     )

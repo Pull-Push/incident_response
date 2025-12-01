@@ -1,12 +1,23 @@
 const axios = require('axios')
 
 
-async function getLocalWeather(){
+async function getLocalWeather(foundLocal){
+    console.log('weatherService Location', foundLocal)
     const local = []
-    const [lat, lon] = ['40.948020935058594','-74.05921173095703'] //Paramus, NJ Test
+    let setLoc = {
+        lat:'40.948020935058594',
+        lon:'-74.05921173095703'
+        }
+    if(foundLocal){
+        setLoc ={
+        lat:'36.6441517',
+        lon:'-93.2170195'
+        }
+    }
+
     // const [lat, lon] = ['34.0194704','-118.491227'] // Santa Monica, CA Test
     const gridResponse = await axios.get(
-        `https://api.weather.gov/points/${lat},${lon}`
+        `https://api.weather.gov/points/${setLoc.lat},${setLoc.lon}`
     );
     // console.log('grid', gridResponse.data)
     // console.log('forecast URL', gridResponse.data.properties.forecast)
