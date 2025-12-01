@@ -1,15 +1,16 @@
 import { useNavigate } from "react-router-dom"
-
-const navigate = useNavigate
-
+import NavBar from "../components/NavBar"
 
 export default function CreateCustomer(){
+    const navigate = useNavigate()
+    
     function handleSubmit(){
-        alert('Customer Created!')
+        alert('Cutomer Created')
         navigate('/customers')
     }
     return(
         <div className="customerCreateMain">
+            <NavBar/>
             <h1>Create A Customer</h1>
             <form action={()=> handleSubmit()}>
                 <label>Customer Name</label>
