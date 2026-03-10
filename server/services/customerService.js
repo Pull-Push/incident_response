@@ -3,12 +3,26 @@ const pool = require('../db')
 //GET ALL CUSTOMERS
 async function getCustomers(){
     try {
-        const customerInfo = await pool.query('SELECT * FROM customers')
-        console.log(customerInfo)
-        res.json(customerInfo.rows)
+        const result = await pool.query('SELECT * FROM customers ORDER BY name ASC')
+        console.log(result)
+        return result.rows
     } catch (error) {
-        console.error(error)
-        res.status(500).json({error: 'Failed to fetch customer'})
+        console.error('Error fetching customers', error)
+        throw error
+    }
+}
+
+//Get single customer
+async function getIndyCustomer(customer_id) {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM customers WHERE id = $1`,
+            [customer_id]
+        )
+        return result.rows[0]
+    } catch (error) {
+        console.error('Error fetching customer', error)
+        throw error
     }
 }
 //CREATE CUSTOMER
@@ -28,28 +42,24 @@ async function insertCustomer(customerData){
     throw error
     }
 }
-//GET SINGLE CUSTOMER
-async function getIndyCustomer(customer_number){
+
+//UPDATE CUSTOMER
+async function updateCustomer(customer_id, customer_data){
     try {
-        const customerNumber = customer_number
-        console.log('Fetching customer number', customerNumber)
+        const {name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long} = customer_data
         const result = await pool.query(
-            `SELECT * FROM CUSTOMERS WHERE id = $1`, [customerNumber]
+            `UPDATE customers
+            SET name=$1, dept=$2, add_num=$3, street=$4, city=$5, state=$6, zip=$7, contact=$8, phone=$9, contract=$10, notes=$11, lat=$12, long=$13, updated_at = CURRENT_TIMESTAMP
+            WHERE id=$14
+            RETURNING *`,
+            [name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long, customer_id]
         )
         return result.rows[0]
     } catch (error) {
-        console.error('Error fetching customer', error)
-        res.status(500).json({error: 'Failed to fetch customer'})
-    }
+        console.error('Error updating customer', error)
+        throw error
+    }  
 }
-// //UPDATE CUSTOMER
-// async function update(customer_data){
-//     try {
-//         const {id, name, dept, addNum, street, city, state, zip, notes, contact, phone, contract, lat, long} = customer_data
-//     } catch (error) {
-        
-//     }  
-// }
 
 
-module.exports = {getCustomers, insertCustomer}
+module.exports = {getCustomers, getIndyCustomer, insertCustomer, updateCustomer}
