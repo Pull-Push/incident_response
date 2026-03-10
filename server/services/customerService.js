@@ -1,6 +1,6 @@
 const pool = require('../db')
 
-
+//GET ALL CUSTOMERS
 async function getCustomers(){
     try {
         const customerInfo = await pool.query('SELECT * FROM customers')
@@ -11,8 +11,7 @@ async function getCustomers(){
         res.status(500).json({error: 'Failed to fetch customer'})
     }
 }
-
-
+//CREATE CUSTOMER
 async function insertCustomer(customerData){
     try {
         const {name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long } = customerData
@@ -28,8 +27,29 @@ async function insertCustomer(customerData){
     console.error('Error Inserting Customer', error)
     throw error
     }
-
 }
+//GET SINGLE CUSTOMER
+async function getIndyCustomer(customer_number){
+    try {
+        const customerNumber = customer_number
+        console.log('Fetching customer number', customerNumber)
+        const result = await pool.query(
+            `SELECT * FROM CUSTOMERS WHERE id = $1`, [customerNumber]
+        )
+        return result.rows[0]
+    } catch (error) {
+        console.error('Error fetching customer', error)
+        res.status(500).json({error: 'Failed to fetch customer'})
+    }
+}
+// //UPDATE CUSTOMER
+// async function update(customer_data){
+//     try {
+//         const {id, name, dept, addNum, street, city, state, zip, notes, contact, phone, contract, lat, long} = customer_data
+//     } catch (error) {
+        
+//     }  
+// }
 
 
 module.exports = {getCustomers, insertCustomer}

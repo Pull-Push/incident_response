@@ -28,3 +28,9 @@ export const createCustomer = async (customer) =>{
     if(!response.ok) throw new Error("Failed to create customer")
     return response.json()
 }
+
+export const getIncidents = async () =>{
+    const response = await fetch(`${API_BASE_URL}/api/incidents`)
+    if(!response.ok) throw new Error("Failed to fetch incidents")
+        return response.json()
+}
