@@ -4,7 +4,7 @@ const pool = require('../db')
 async function getCustomers(){
     try {
         const result = await pool.query('SELECT * FROM customers ORDER BY name ASC')
-        console.log(result)
+        // console.log(result)
         return result.rows
     } catch (error) {
         console.error('Error fetching customers', error)

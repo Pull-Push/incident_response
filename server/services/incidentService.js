@@ -39,12 +39,12 @@ async function getIndyIncident(incident_id) {
 //create incident
 async function insertIncident(incident_data) {
     try {
-        const {customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned } = incident_data
+        const {customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned, status } = incident_data
         const result = await pool.query(
-            `INSERT into incident (customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            `INSERT into incident (customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING *`,
-            [customer_id, make, model, serial, location, physical_damage || false, water_damage || false, incident_type, notes, tech_assigned || null]
+            [customer_id, make, model, serial, location, physical_damage || false, water_damage || false, incident_type, notes, tech_assigned || null, status || 'OPEN']
         )
         return result.rows[0]
     } catch (error) {
