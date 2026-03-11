@@ -8,7 +8,7 @@ export default function Customers(){
     const [customers, setCustomers ] = useState([])
     const [loading, setLoading ] = useState(true)
     const [error, setError ] = useState(null);
-    
+    const [search, setSearch] = useState('');
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -27,22 +27,68 @@ export default function Customers(){
         fetchCustomers();
     }, []);
 
-    if (loading) return <div> Data Loading</div>
-    if(error) return <div>Error: {error}</div>
-
-    return(
-        <div className="customer-main">
-            <NavBar/>
-            <h1>This is the main customer page</h1>
-            <button className="btn btn-primart" onClick={() => navigate('/create/customer')}>Create a Customer</button>
-            <h3>customer info goes below here</h3>
-            {customers.map((customer, key) =>(
-                <div key={key}>
-                    <p>{customer.id} {customer.name} {customer.dept}</p>
-                    <Link to={`view/${customer.id}`}>View</Link>
-                    <Link to={`edit/${customer.id}`}>Edit</Link>
-                </div>
-            ))}
-        </div>
+    const filtered = customers.filter(customer => 
+        customer.name.toLowerCase().includes(search.toLowerCase()) ||
+        customer.city.toLowerCase().includes(search.toLowerCase()) ||
+        customer.contact.toLowerCase().includes(search.toLowerCase())
     )
+
+        return (
+            <div className="page-main">
+                <NavBar />
+                <div className="page-content">
+                    <div className="page-header">
+                        <h1>Customers</h1>
+                        <button className="btn btn-primary" onClick={() => navigate('/create/customer')}>+ New Customer</button>
+                    </div>
+    
+                    {error && <div className="error-banner">{error}</div>}
+    
+                    <input
+                        className="search-input"
+                        type="text"
+                        placeholder="Search by name, city, or contact..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                    />
+    
+                    {loading ? (
+                        <div className="loading">Loading customers...</div>
+                    ) : (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Contact</th>
+                                    <th>Phone</th>
+                                    <th>Contract</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filtered.length === 0 ? (
+                                    <tr><td colSpan="8" className="empty-msg">No customers found.</td></tr>
+                                ) : (
+                                    filtered.map(customer => (
+                                        <tr key={customer.id}>
+                                            <td>{customer.name}</td>
+                                            <td>{customer.dept || '—'}</td>
+                                            <td>{customer.city}</td>
+                                            <td>{customer.state}</td>
+                                            <td>{customer.contact}</td>
+                                            <td>{customer.phone}</td>
+                                            <td>{customer.contract ? '✅' : '—'}</td>
+                                            <td><Link to={`/customers/${customer.id}`} className="btn btn-sm">View</Link></td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            </div>
+        )
 }
