@@ -28,9 +28,9 @@ router.get('/customers/:id', async (req, res) =>{
 //Create customer (geocodes if lat/long not provided)
 router.post('/customers', async (req, res) =>{
     try {
-        const body = { ...req.body}
+        const body = { ...req.body} //create a shallow copy of req.body - DO NOT MUTATE BODY DIRECTLY!!
 
-        if(body.lat == null || body.long == null){
+        if(body.lat == null || body.long == null){ // == catches both undefined and null
             const addressInfo = {
                 addNum: body.addNum,
                 street: body.street,
