@@ -31,7 +31,8 @@ export default function CreateIncident() {
         physical_damage: false,
         water_damage: false,
         notes: '',
-        tech_assigned: ''
+        tech_assigned: '',
+        staus: ''
     })
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState(null)
