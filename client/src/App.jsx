@@ -21,7 +21,7 @@ function App() {
         <Route path='/incidents/:id' element={<IndyIncident />} />
         <Route path='/create/customer' element={<CustomerCreate />} />
         <Route path='/create/incident' element={<IncidentCreate />} />
-        <Route path='*' element={<NotFound />} /> 
+        {/* <Route path='*' element={<NotFound />} />  */}
       </Routes>
     </BrowserRouter>
   )

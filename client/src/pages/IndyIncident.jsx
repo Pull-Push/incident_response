@@ -36,7 +36,7 @@ export default function IndyIncident() {
             const updated = await updateIncident(id, { is_complete: true })
             setIncident(updated)
         } catch (err) {
-            setError('Failed to update incident.', err.message)
+            setError(`Failed to update incident: ${err.message}`)
         } finally {
             setSaving(false)
         }
@@ -48,7 +48,7 @@ export default function IndyIncident() {
             const updated = await updateIncident(id, { is_complete: false })
             setIncident(updated)
         } catch (err) {
-            setError('Failed to update incident.', err.message)
+            setError(`Failed to update incident: ${err.message}`)
         } finally {
             setSaving(false)
         }
@@ -61,7 +61,7 @@ export default function IndyIncident() {
             setIncident(updated)
             setEditingNotes(false)
         } catch (err) {
-            setError('Failed to save notes.', err.message)
+            setError(`Failed to update incident: ${err.message}`)
         } finally {
             setSaving(false)
         }

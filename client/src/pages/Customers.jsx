@@ -29,8 +29,8 @@ export default function Customers(){
 
     const filtered = customers.filter(customer => 
         customer.name.toLowerCase().includes(search.toLowerCase()) ||
-        customer.city.toLowerCase().includes(search.toLowerCase()) ||
-        customer.contact.toLowerCase().includes(search.toLowerCase())
+        customer.city?.toLowerCase().includes(search.toLowerCase()) ||
+        customer.contact?.toLowerCase().includes(search.toLowerCase())
     )
 
         return (

@@ -4,18 +4,19 @@ const pool = require('../db')
 async function getIncidents() {
     try {
         const result = await pool.query(
-            `SELECT i.*, c.name AS cutomer, u.first_name || ' ' || u.last_name AS technician
-            FROM incident i
-            LEFT JOIN customers c ON i.customer_id = c.id
-            LEFT JOIN users u ON i.tech_assigned = u.id 
-            ORDER BY i.created_at DESC`
+            `SELECT i.*, c.name AS customer, u.first_name || ' ' || u.last_name AS technician
+             FROM incident i
+             LEFT JOIN customers c ON i.customer_id = c.id
+             LEFT JOIN users u ON i.tech_assigned = u.id
+             ORDER BY i.created_at DESC`
         )
         return result.rows
-    }catch(error) {
+    } catch (error) {
         console.error('Failed to get incidents', error)
         throw error
     }
 }
+
 
 //get singe incident
 async function getIndyIncident(incident_id) {
@@ -73,4 +74,4 @@ async function updateIncident(incident_id, updateData) {
     }
 }
 
-module.exports = ( getIncidents, getIndyIncident, insertIncident, updateIncident) 
+module.exports = { getIncidents, getIndyIncident, insertIncident, updateIncident }

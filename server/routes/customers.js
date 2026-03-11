@@ -16,7 +16,7 @@ router.get('/customers', async (req, res) =>{
 //get single customer
 router.get('/customers/:id', async (req, res) =>{
     try {
-        const customer = await getIndyCustomer(res.para,satisfies.id)
+        const customer = await getIndyCustomer(req.params.id)
         if(!customer) return res.status(404).json({error: 'Customer not found'})
         res.json(customer)
     } catch (error) {
