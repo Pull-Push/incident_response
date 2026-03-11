@@ -43,7 +43,7 @@ async function insertIncident(incident_data) {
             `INSERT into incident (customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *`,
-            [customer_id, make, model, serial, location, physical_damage || false, water_damage || false, incident_type, notes, tech_assigned]
+            [customer_id, make, model, serial, location, physical_damage || false, water_damage || false, incident_type, notes, tech_assigned || null]
         )
         return result.rows[0]
     } catch (error) {

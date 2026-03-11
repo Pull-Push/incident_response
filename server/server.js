@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5050
 const allowedOrigins = [
     'http://localhost:5173',
     process.env.FRONTEND_URL
-].filert(Boolean)
+].filter(Boolean)
 
 app.use(cors({
     origin: function(origin, callback){
