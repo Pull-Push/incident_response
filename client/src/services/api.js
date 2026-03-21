@@ -72,3 +72,45 @@ export const updateIncident = async (id, updates) => {
     if (!response.ok) throw new Error('Failed to update incident')
     return response.json()
 }
+
+
+// USERS
+export const getUsers = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/users`)
+    if (!response.ok) throw new Error('Failed to fetch Users')
+    return response.json()
+}
+
+export const getUser = async (id) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/${id}`)
+    if(!response.ok) throw new Error('Failed to fetch User')
+        return response.json()
+}
+
+export const createUser = async (userData) => {
+    const response = await fetch(`${API_BASE_URL}/api/users`,{
+        method: 'POST',
+        headers:{'Content-Type': 'application/json'},
+        body: JSON.stringify(userData)
+    })
+    if(!response.ok) throw new Error('Failed to create user')
+    return response.json()
+}
+
+export const updateUser = async (id, updateData) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+        method:'PATCH',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(updateData)
+    })
+    if(!response.ok) throw new Error('Failed to update user')
+    return response.json()
+}
+
+export const deactivateUser = async (id) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/${id}/deactivate`,{
+        method:'PATCH'
+    })
+    if(!response.ok) throw new Error('Failed to deactivate user')
+        return response.json()
+}

@@ -5,6 +5,7 @@ const pool = require('./db.js');
 // IMPORT ROUTES
 const incidentRoutes = require('./routes/incidents')
 const customerRoutes = require('./routes/customers')
+const userRoutes = require('./routes/users')
 
 const app = express()
 const PORT = process.env.PORT || 5050
@@ -32,6 +33,7 @@ app.use(express.json())
 
 app.use('/api', incidentRoutes)
 app.use('/api', customerRoutes)
+app.use('/api', userRoutes)
 
 
 //test route - Health Check
