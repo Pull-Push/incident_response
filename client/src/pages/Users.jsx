@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import {getUsers, createUser } from '../services/api'
 
@@ -82,7 +82,57 @@ export default function Users(){
                     <h1>Users</h1>
                     <button className="btn btn-primary" onClick={() => toggleCreateUser()}>+ Create User</button>
                 </div>
-                {showForm && <div className="user-form"><h2>USER FORM GOES HERE!!</h2></div>}
+                {showForm && <div className="user-form">
+                <form className="form-card" onSubmit={handleSubmit}>
+        <div className="form-section">
+            <h3>User Details</h3>
+            <div className="form-group">
+                <label htmlFor="employee_number">Employee Number</label>
+                <input type="text" name="employee_number" id="employee_number" required value={form.employee_number} onChange={handleChange}/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="first_name">First Name</label>
+                <input type="text" name="first_name" id="first_name" required value={form.first_name} onChange={handleChange} placeholder='John'/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="last_name">Last Name</label>
+                <input type="text" name="last_name" id="last_name" required value={form.last_name} onChange={handleChange} placeholder='Smith'/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="position">Position</label>
+                <input type="text" name="position" id="position" required value={form.position} onChange={handleChange} placeholder='Sales'/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <input type="email" name="email" id="email" required value={form.email} onChange={handleChange} placeholder='JSmith@company.com'/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="is_manager">Manager</label>
+                <input type='checkbox' name="is_manager" id="is_manager" checked={form.is_manager} onChange={handleChange}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="is_sales">Sales</label>
+                <input type='checkbox' name="is_sales" id="is_sales" checked={form.is_sales} onChange={handleChange}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="is_service">Service</label>
+                <input type='checkbox' name="is_service" id="is_service" checked={form.is_service} onChange={handleChange}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input type='password' name="password" id="password" required value={form.password} onChange={handleChange}/>
+            </div>
+        </div>
+        <div className="form-actions">
+            <button type="submit" className="btn btn-primary" disabled={submitting}>
+                {submitting ? 'Creating...' : 'Create User'}
+            </button>
+        </div>
+    </form>    
+                </div>}
                 {error && <div className="error-banner">{error}</div>}
                 {loading && <div className="loading">Loading users...</div>}
                 <UserTable users={users} />
