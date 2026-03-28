@@ -11,6 +11,7 @@ export default function NavBar(){
                 <Link to={'/customers'}>Customers</Link>
                 <Link to={'/incidents'}>Incidents</Link>
                 <Link to={'/profile'}>Profile</Link>
+                <Link to={'/users'}>Users</Link>
             </div>
         </div>
     )

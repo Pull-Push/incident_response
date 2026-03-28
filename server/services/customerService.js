@@ -3,7 +3,7 @@ const pool = require('../db')
 //GET ALL CUSTOMERS
 async function getCustomers(){
     try {
-        const result = await pool.query('SELECT * FROM customers ORDER BY name ASC')
+        const result = await pool.query('SELECT * FROM customers WHERE is_valid= true ORDER BY name ASC')
         // console.log(result)
         return result.rows
     } catch (error) {
@@ -28,13 +28,13 @@ async function getIndyCustomer(customer_id) {
 //CREATE CUSTOMER
 async function insertCustomer(customerData){
     try {
-        const {name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long } = customerData
+        const {name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long } = customerData
         console.log("Inserting customer", customerData)
         const result = await pool.query(
-            `INSERT INTO customers (name, dept, add_num, street, city, state, zip, contact, phone, contract, notes, lat, long)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, $11,$12,$13)
+            `INSERT INTO customers (name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, $11, $12)
             RETURNING *`,
-            [name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long]
+            [name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long]
         )
         return result.rows[0]
     } catch (error) {
@@ -46,13 +46,13 @@ async function insertCustomer(customerData){
 //UPDATE CUSTOMER
 async function updateCustomer(customer_id, customer_data){
     try {
-        const {name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long} = customer_data
+        const {name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long} = customer_data
         const result = await pool.query(
             `UPDATE customers
-            SET name=$1, dept=$2, add_num=$3, street=$4, city=$5, state=$6, zip=$7, contact=$8, phone=$9, contract=$10, notes=$11, lat=$12, long=$13, updated_at = CURRENT_TIMESTAMP
-            WHERE id=$14
+            SET name=$1, dept=$2, address=$3, city=$4, state=$5, zip=$6, contact=$7, phone=$8, contract=$9, notes=$10, lat=$11, long=$12
+            WHERE id=$13
             RETURNING *`,
-            [name, dept, addNum, street, city, state, zip, contact, phone, contract, notes, lat, long, customer_id]
+            [name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long, customer_id]
         )
         return result.rows[0]
     } catch (error) {
@@ -61,5 +61,23 @@ async function updateCustomer(customer_id, customer_data){
     }  
 }
 
+//DEACTIVATE USER
+async function deactivateCustomer(customer_id) {
+    try {
+        const result = await pool.query(
+            `UPDATE customers
+            SET is_valid = false
+            WHERE id=$1
+            RETURNING *`,
+            [customer_id]
+        )
+        return result.rows[0]
+    } catch (error) {
+        console.error('Error deactivating customer', error)
+        throw error
+    }
+    
+}
 
-module.exports = {getCustomers, getIndyCustomer, insertCustomer, updateCustomer}
+
+module.exports = {getCustomers, getIndyCustomer, insertCustomer, updateCustomer, deactivateCustomer}
