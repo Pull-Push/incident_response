@@ -8,6 +8,8 @@ import IncidentCreate from './pages/IncidentCreate'
 import IndyCustomer from './pages/IndyCustomer'
 import IndyIncident from './pages/IndyIncident'
 import './App.css'
+import Users from './pages/Users'
+import IndyUser from './pages/IndyUser'
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path='/incidents/:id' element={<IndyIncident />} />
         <Route path='/create/customer' element={<CustomerCreate />} />
         <Route path='/create/incident' element={<IncidentCreate />} />
+        <Route path='/users' element={<Users />} />
+        <Route path='/users/:id' element={<IndyUser />} />
         {/* <Route path='*' element={<NotFound />} />  */}
       </Routes>
     </BrowserRouter>
