@@ -2,9 +2,10 @@ const express = require('express')
 const router = express.Router()
 const { getCustomers, getIndyCustomer, insertCustomer, updateCustomer } = require('../services/customerService');
 const { getLatLon } = require('../services/mapService') 
+const {authVerify} = require('../middleware/auth')
 
 //get all customers
-router.get('/customers', async (req, res) =>{
+router.get('/customers', authVerify, async (req, res) =>{
     try {
         const customers = await getCustomers()
         res.json(customers)
@@ -14,7 +15,7 @@ router.get('/customers', async (req, res) =>{
     }})
 
 //get single customer
-router.get('/customers/:id', async (req, res) =>{
+router.get('/customers/:id', authVerify, async (req, res) =>{
     try {
         const customer = await getIndyCustomer(req.params.id)
         if(!customer) return res.status(404).json({error: 'Customer not found'})
@@ -26,14 +27,14 @@ router.get('/customers/:id', async (req, res) =>{
 })
 
 //Create customer (geocodes if lat/long not provided)
-router.post('/customers', async (req, res) =>{
+router.post('/customers', authVerify, async (req, res) =>{
+    if(!req.user.is_manager && !req.user.is_sales ) return res.status(403).json({error:'Invalid Permissions'})
     try {
         const body = { ...req.body} //create a shallow copy of req.body - DO NOT MUTATE BODY DIRECTLY!!
 
         if(body.lat == null || body.long == null){ // == catches both undefined and null
             const addressInfo = {
-                addNum: body.addNum,
-                street: body.street,
+                address: body.address,
                 city: body.city,
                 state: body.state,
                 zip: body.zip
@@ -51,14 +52,14 @@ router.post('/customers', async (req, res) =>{
 })
 
 //Update customer
-router.patch('/customers/:id', async (req, res) =>{
+router.patch('/customers/:id', authVerify, async (req, res) =>{
+    if(!req.user.is_manager && !req.user.is_sales ) return res.status(403).json({error:'Invalid Permissions'})
     try {
         const body = { ...req.body}
 
         if( body.lat == null || body.long == null){
             const addressInfo = {
-                addNum: body.addNum,
-                street: body.street,
+                address: body.address,
                 city: body.city,
                 state: body.state,
                 zip: body. zip

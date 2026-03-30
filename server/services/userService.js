@@ -79,7 +79,20 @@ async function deactivateUser(user_id) {
         console.error('Error deactivating user', error)
         throw error
     }
-
 }
 
-module.exports = {getUsers, getIndyUser, insertUser, updateUser, deactivateUser}
+async function getUserByEmail(email) {
+    try{
+        const result = await pool.query(
+            `SELECT * FROM users 
+            WHERE email = $1`,
+            [email]
+        )
+        return result.rows[0]
+    }catch(error){
+        console.error('Error fetching user', error)
+        throw error
+    }
+}
+
+module.exports = {getUsers, getIndyUser, insertUser, updateUser, deactivateUser, getUserByEmail}

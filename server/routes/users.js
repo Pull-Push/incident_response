@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const { getUsers, getIndyUser, insertUser, updateUser, deactivateUser } = require('../services/userService')
+const {authVerify, managerVerify } = require('../middleware/auth')
 
-router.get('/users', async(req, res) =>{
+router.get('/users', authVerify, async(req, res) =>{
     try {
         const users = await getUsers()
         res.json(users)
@@ -12,7 +13,7 @@ router.get('/users', async(req, res) =>{
     }
 })
 
-router.get('/users/:id', async(req, res) =>{
+router.get('/users/:id', authVerify, async(req, res) =>{
     try {
         const user = await getIndyUser(req.params.id)
         if(!user) return res.status(404).json({error: 'User not found'})
@@ -23,7 +24,7 @@ router.get('/users/:id', async(req, res) =>{
     }
 })
 
-router.post('/users', async(req, res) =>{
+router.post('/users', authVerify, managerVerify, async(req, res) =>{
     try {
         const user = await insertUser(req.body)
         res.status(201).json(user)
@@ -33,7 +34,7 @@ router.post('/users', async(req, res) =>{
     }
 })
 
-router.patch('/users/:id', async(req, res) =>{
+router.patch('/users/:id', authVerify, managerVerify, async(req, res) =>{
     try {
         const user = await updateUser(req.params.id, req.body)
         if(!user) return res.status(404).json({error: 'User not found'})
@@ -44,7 +45,7 @@ router.patch('/users/:id', async(req, res) =>{
     }
 })
 
-router.patch('/users/:id/deactivate', async(req, res) =>{
+router.patch('/users/:id/deactivate', authVerify, managerVerify, async(req, res) =>{
     try {
         const user = await deactivateUser(req.params.id)
         if(!user) return res.status(404).json({error: 'User not found'})

@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const {authVerify, managerVerify} = require('../middleware/auth')
 
 const { getLocalWeather } = require('../services/weatherService')
 const { getIncidents, getIndyIncident, insertIncident, updateIncident } = require('../services/incidentService')
 
 // GET DASHBOARD (weather)
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', authVerify, async (req, res) => {
     try {
         const weatherResult = await getLocalWeather(req.body)
         res.json(weatherResult)
@@ -16,7 +17,7 @@ router.get('/dashboard', async (req, res) => {
 })
 
 // GET ALL INCIDENTS
-router.get('/incidents', async (req, res) => {
+router.get('/incidents',authVerify, async (req, res) => {
     try {
         const incidentResult = await getIncidents()
         res.json(incidentResult)
@@ -27,7 +28,7 @@ router.get('/incidents', async (req, res) => {
 })
 
 // GET SINGLE INCIDENT
-router.get('/incidents/:id', async (req, res) => {
+router.get('/incidents/:id', authVerify, async (req, res) => {
     try {
         const incident = await getIndyIncident(req.params.id)
         if (!incident) return res.status(404).json({ error: 'Incident not found' })
@@ -39,7 +40,7 @@ router.get('/incidents/:id', async (req, res) => {
 })
 
 // CREATE INCIDENT
-router.post('/incidents', async (req, res) => {
+router.post('/incidents', authVerify, managerVerify,  async (req, res) => {
     try {
         const newIncident = await insertIncident(req.body)
         res.status(201).json(newIncident)
@@ -50,7 +51,8 @@ router.post('/incidents', async (req, res) => {
 })
 
 // UPDATE INCIDENT
-router.patch('/incidents/:id', async (req, res) => {
+router.patch('/incidents/:id', authVerify , async (req, res) => {
+    if(!req.user.is_manager && !req.user.is_service) return res.status(403).json({error:'Invalid Permissions'})
     try {
         const updated = await updateIncident(req.params.id, req.body)
         if (!updated) return res.status(404).json({ error: 'Incident not found' })

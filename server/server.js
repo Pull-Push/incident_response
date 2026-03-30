@@ -6,6 +6,7 @@ const pool = require('./db.js');
 const incidentRoutes = require('./routes/incidents')
 const customerRoutes = require('./routes/customers')
 const userRoutes = require('./routes/users')
+const authRoutes = require('./routes/auth')
 
 const app = express()
 const PORT = process.env.PORT || 5050
@@ -34,6 +35,7 @@ app.use(express.json())
 app.use('/api', incidentRoutes)
 app.use('/api', customerRoutes)
 app.use('/api', userRoutes)
+app.use('/api', authRoutes)
 
 
 //test route - Health Check
