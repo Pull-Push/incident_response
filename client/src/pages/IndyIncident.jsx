@@ -33,7 +33,7 @@ export default function IndyIncident() {
         if (!confirm('Mark this incident as complete?')) return
         try {
             setSaving(true)
-            const updated = await updateIncident(id, { is_complete: true })
+            const updated = await updateIncident(id, { status: 'complete' })
             setIncident(updated)
         } catch (err) {
             setError(`Failed to update incident: ${err.message}`)
@@ -45,7 +45,7 @@ export default function IndyIncident() {
     const handleReopenIncident = async () => {
         try {
             setSaving(true)
-            const updated = await updateIncident(id, { is_complete: false })
+            const updated = await updateIncident(id, { status: 'open' })
             setIncident(updated)
         } catch (err) {
             setError(`Failed to update incident: ${err.message}`)
@@ -82,10 +82,10 @@ export default function IndyIncident() {
                         <p className="subtitle">{incident.customer}</p>
                     </div>
                     <div className="header-actions">
-                        <span className={`badge ${incident.is_complete ? 'badge-complete' : 'badge-active'}`}>
-                            {incident.is_complete ? 'Completed' : 'Active'}
+                        <span className={`badge ${incident.status ==='complete' ? 'badge-complete' : 'badge-active'}`}>
+                            {incident.status === 'complete' ? 'complete' : 'open'}
                         </span>
-                        {!incident.is_complete ? (
+                        {incident.status !== 'complete' ? (
                             <button className="btn btn-success" onClick={handleMarkComplete} disabled={saving}>
                                 {saving ? 'Saving...' : 'Mark Complete'}
                             </button>

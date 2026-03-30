@@ -35,8 +35,8 @@ export default function IndyCustomer() {
     if (error) return <div className="page-main"><NavBar /><div className="error-banner">{error}</div></div>
     if (!customer) return <div className="page-main"><NavBar /><div className="error-banner">Customer not found.</div></div>
 
-    const activeIncidents = incidents.filter(i => !i.is_complete)
-    const completedIncidents = incidents.filter(i => i.is_complete)
+    const activeIncidents = incidents.filter(i => i.status !== 'complete')
+    const completedIncidents = incidents.filter(i => i.status === 'complete')
 
     return (
         <div className="page-main">
@@ -61,7 +61,7 @@ export default function IndyCustomer() {
                 <div className="detail-grid">
                     <div className="detail-card">
                         <h3>Address</h3>
-                        <p>{customer.add_num} {customer.street}</p>
+                        <p>{customer.address}</p>
                         <p>{customer.city}, {customer.state} {customer.zip}</p>
                         {customer.lat && customer.long && (
                             <a

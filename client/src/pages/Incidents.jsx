@@ -26,8 +26,8 @@ export default function Incidents(){
         }
     }
 
-    const activeIncidents = incidents.filter(incident => !incident.is_complete)
-    const completedIncidents = incidents.filter(incident => incident.is_complete)
+    const activeIncidents = incidents.filter(incident => incident.status !== 'complete')
+    const completedIncidents = incidents.filter(incident => incident.status === 'complete')
 
     return (
             <div className="page-main">
