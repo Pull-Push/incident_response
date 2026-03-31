@@ -1,6 +1,7 @@
-import { logIn } from "../services/api";
-import { useState } from "react";
+import { logIn, getMe } from "../services/api";
+import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from "../context/AuthContext";
 
 
 export default function Login(){
@@ -11,6 +12,7 @@ export default function Login(){
         password: '',
     })
     const navigate = useNavigate()
+    const { setCurrentUser } = useContext(AuthContext) 
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
@@ -24,6 +26,8 @@ export default function Login(){
             try {
                 const data = await logIn(form)
                 localStorage.setItem('token', data.token)
+                const user = await getMe()
+                setCurrentUser(user)
                 navigate('/dashboard')
             } catch (err) {
                 setError('Failed to Log In. Please try again.')

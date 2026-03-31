@@ -146,3 +146,11 @@ export const deactivateUser = async (id) => {
     if(!response.ok) throw new Error('Failed to deactivate user')
         return response.json()
 }
+
+export const getMe = async () =>{
+    const response = await fetch(`${API_BASE_URL}/api/me`,{
+        headers:getAuthHeader()
+    })
+    if(!response.ok) throw new Error('Failed to fetch user')
+    return response.json()
+}

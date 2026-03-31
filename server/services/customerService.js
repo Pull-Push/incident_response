@@ -28,13 +28,13 @@ async function getIndyCustomer(customer_id) {
 //CREATE CUSTOMER
 async function insertCustomer(customerData){
     try {
-        const {name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long } = customerData
+        const {name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long, created_by } = customerData
         console.log("Inserting customer", customerData)
         const result = await pool.query(
-            `INSERT INTO customers (name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, $11, $12)
+            `INSERT INTO customers (name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long, created_by)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, $11, $12, $13)
             RETURNING *`,
-            [name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long]
+            [name, dept, address, city, state, zip, contact, phone, contract, notes, lat, long, created_by]
         )
         return result.rows[0]
     } catch (error) {

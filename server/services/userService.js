@@ -4,7 +4,7 @@ const { hashPassword } = require('./authService')
 //GET ALL USERS
 async function getUsers(){
     try{
-        const result = await pool.query('SELECT * FROM users WHERE is_valid = true ORDER BY last_name ASC')
+        const result = await pool.query('SELECT * FROM users WHERE is_valid = true ORDER BY employee_number ASC')
         return result.rows 
     }catch(error){
         console.error('Failed to fetch users', error)
@@ -25,12 +25,12 @@ async function getIndyUser(id) {
 //insert user
 async function insertUser(userData) {
     try {
-        const {first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, password } = userData
+        const {first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, password, phone } = userData
         const hashedPass = await hashPassword(password)
-        const result = await pool.query(`INSERT INTO users (first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, hashed_pw)
-                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        const result = await pool.query(`INSERT INTO users (first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, hashed_pw, phone)
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                         RETURNING *`,
-                        [first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, hashedPass]
+                        [first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email.toLowerCase(), hashedPass, phone]
                     )
         return result.rows[0]
     } catch (error) {
@@ -41,7 +41,7 @@ async function insertUser(userData) {
 
 async function updateUser(user_id, updateData) {
     try {
-        const {first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, password } = updateData
+        const {first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, password, phone } = updateData
         const hashedPass = password ? await hashPassword(password) : null;
         const result = await pool.query(
             `UPDATE users
@@ -53,10 +53,11 @@ async function updateUser(user_id, updateData) {
                 is_service = COALESCE($6, is_service),
                 employee_number = COALESCE($7, employee_number),
                 email = COALESCE($8, email),
-                hashed_pw = COALESCE($9, hashed_pw)
-            WHERE id = $10
+                hashed_pw = COALESCE($9, hashed_pw),
+                phone = COALESCE($10, phone)
+            WHERE id = $11
             RETURNING *`,
-            [first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, hashedPass, user_id]
+            [first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email.toLowerCase(), hashedPass, phone, user_id]
         )
         return result.rows[0]
     } catch (error) {
@@ -86,7 +87,7 @@ async function getUserByEmail(email) {
         const result = await pool.query(
             `SELECT * FROM users 
             WHERE email = $1`,
-            [email]
+            [email.toLowerCase()]
         )
         return result.rows[0]
     }catch(error){

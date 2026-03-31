@@ -4,11 +4,12 @@ const pool = require('../db')
 async function getIncidents() {
     try {
         const result = await pool.query(
-            `SELECT i.*, c.name AS customer, u.first_name || ' ' || u.last_name AS technician
-             FROM incidents i
-             LEFT JOIN customers c ON i.customer_id = c.id
-             LEFT JOIN users u ON i.tech_assigned = u.id
-             ORDER BY i.created_at DESC`
+            `SELECT i.*, c.name AS customer, u.first_name || ' ' || u.last_name AS technician, cb.first_name || ' ' || cb.last_name AS created_by
+            FROM incidents i
+            LEFT JOIN customers c ON i.customer_id = c.id
+            LEFT JOIN users u ON i.tech_assigned = u.id
+            LEFT JOIN users cb ON i.created_by = cb.id
+            ORDER BY i.created_at DESC`
         )
         return result.rows
     } catch (error) {
@@ -22,10 +23,11 @@ async function getIncidents() {
 async function getIndyIncident(incident_id) {
     try {
         const result = await pool.query(
-            `SELECT i.*, c.name AS customer, u.first_name || ' ' || u.last_name AS technician
+            `SELECT i.*, c.name AS customer, u.first_name || ' ' || u.last_name AS technician, cb.first_name || ' ' || cb.last_name AS created_by
             FROM incidents i
             LEFT JOIN customers c ON i.customer_id = c.id
             LEFT JOIN users u ON i.tech_assigned = u.id 
+            LEFT JOIN users cb ON i.created_by = cb.id
             WHERE i.id = $1`,
             [incident_id]
         )
@@ -39,12 +41,12 @@ async function getIndyIncident(incident_id) {
 //create incident
 async function insertIncident(incident_data) {
     try {
-        const {customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned, status } = incident_data
+        const {customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned, status, created_by } = incident_data
         const result = await pool.query(
-            `INSERT into incidents (customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned, status)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            `INSERT into incidents (customer_id, make, model, serial, location, physical_damage, water_damage, incident_type, notes, tech_assigned, status, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING *`,
-            [customer_id, make, model, serial, location, physical_damage || false, water_damage || false, incident_type, notes, tech_assigned || null, status || 'open']
+            [customer_id, make, model, serial, location, physical_damage || false, water_damage || false, incident_type, notes, tech_assigned || null, status || 'open', created_by]
         )
         return result.rows[0]
     } catch (error) {

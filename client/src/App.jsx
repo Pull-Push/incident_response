@@ -12,9 +12,11 @@ import './App.css'
 import Users from './pages/Users'
 import IndyUser from './pages/IndyUser'
 import Login from './pages/Login'
+import AuthProvider from './context/AuthProvider'
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Login />} />
@@ -31,6 +33,7 @@ function App() {
         {/* <Route path='*' element={<NotFound />} />  */}
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   )
 }
 
