@@ -12,6 +12,7 @@ import './App.css'
 import Users from './pages/Users'
 import IndyUser from './pages/IndyUser'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
 import AuthProvider from './context/AuthProvider'
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path='/create/incident' element={<ProtectedRoute><IncidentCreate /></ProtectedRoute>} />
         <Route path='/users' element={<ProtectedRoute><Users /></ProtectedRoute>} />
         <Route path='/users/:id' element={<ProtectedRoute><IndyUser /></ProtectedRoute>} />
+        <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         {/* <Route path='*' element={<NotFound />} />  */}
       </Routes>
     </BrowserRouter>
