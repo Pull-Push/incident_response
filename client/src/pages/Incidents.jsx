@@ -59,6 +59,8 @@ export default function Incidents(){
         if (incidents.length === 0) return <p className="empty-msg">None found.</p>
     
         return (
+            <div className="table-wrapper">
+
             <table className="data-table">
                 <thead>
                     <tr>
@@ -87,5 +89,6 @@ export default function Incidents(){
                     ))}
                 </tbody>
             </table>
+        </div>
         )
     }

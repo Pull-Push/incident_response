@@ -55,6 +55,7 @@ export default function Customers(){
                     {loading ? (
                         <div className="loading">Loading customers...</div>
                     ) : (
+                        <div className="table-wrapper">
                         <table className="data-table">
                             <thead>
                                 <tr>
@@ -87,6 +88,7 @@ export default function Customers(){
                                 )}
                             </tbody>
                         </table>
+                    </div>
                     )}
                 </div>
             </div>

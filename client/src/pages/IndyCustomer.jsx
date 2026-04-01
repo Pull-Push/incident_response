@@ -130,6 +130,8 @@ export default function IndyCustomer() {
                     {activeIncidents.length === 0 ? (
                         <p className="empty-msg">No active incidents.</p>
                     ) : (
+                        <div className='table-wrapper'>
+
                         <table className="data-table">
                             <thead>
                                 <tr>
@@ -156,12 +158,15 @@ export default function IndyCustomer() {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     )}
                 </div>
 
                 {completedIncidents.length > 0 && (
                     <div className="section">
                         <h2>Completed Incidents ({completedIncidents.length})</h2>
+                        <div className='table-wrapper'>
+
                         <table className="data-table">
                             <thead>
                                 <tr>
@@ -186,6 +191,7 @@ export default function IndyCustomer() {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 )}
                 {editMode ? (

@@ -3,71 +3,81 @@ import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
 
-
-export default function Login(){
+export default function Login() {
     const [error, setError] = useState(null)
     const [submitting, setSubmitting] = useState(false)
-    const [form, setForm ] = useState({
-        email: '',
-        password: '',
-    })
+    const [form, setForm] = useState({ email: '', password: '' })
     const navigate = useNavigate()
-    const { setCurrentUser } = useContext(AuthContext) 
+    const { setCurrentUser } = useContext(AuthContext)
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target
-        setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+        const { name, value } = e.target
+        setForm(prev => ({ ...prev, [name]: value }))
     }
 
-        const handleSubmit = async (e) => {
-            e.preventDefault()
-            setError(null);
-            setSubmitting(true);
-            try {
-                const data = await logIn(form)
-                localStorage.setItem('token', data.token)
-                const user = await getMe()
-                setCurrentUser(user)
-                navigate('/dashboard')
-            } catch (err) {
-                setError('Failed to Log In. Please try again.')
-                console.error(err)
-                resetForm()
-            } finally {
-                setSubmitting(false)
-            }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setError(null)
+        setSubmitting(true)
+        try {
+            const data = await logIn(form)
+            localStorage.setItem('token', data.token)
+            const user = await getMe()
+            setCurrentUser(user)
+            navigate('/dashboard')
+        } catch (err) {
+            setError('Invalid email or password. Please try again.')
+            console.error(err)
+            setForm(prev => ({ ...prev, password: '' }))
+        } finally {
+            setSubmitting(false)
         }
-        const resetForm = () =>{
-            setForm({
-                email: '',
-                password: ''
-            })
-        }
-    return(
+    }
+
+    return (
         <div className="page-main">
-            <div className="page-content">
-                <div className="page-upper">
-                    <img src="" alt="ICR LOGO" />
+            <div className="login-container">
+                <div className="login-logo">
+                    <div className="login-logo-text">ICR</div>
+                    <div className="login-logo-sub">Incident Command Response</div>
                 </div>
-                <div className="page-lower">
-                    {error && <div className="error-banner">{error}</div>}
-                    <form className="form-card" onSubmit={handleSubmit}>
-                    <div className="form-section">
-                        <h1>Log In</h1>
+
+                {error && <div className="error-banner">{error}</div>}
+
+                <div className="login-card">
+                    <h1>Sign in</h1>
+                    <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input type="email" name="email" id="email" required value={form.email} onChange={handleChange}/>
+                            <label htmlFor="email">Email address</label>
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                required
+                                value={form.email}
+                                onChange={handleChange}
+                                placeholder="you@company.com"
+                                autoComplete="email"
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <input type="password" name="password" id="password" required value={form.password} onChange={handleChange}/>
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                required
+                                value={form.password}
+                                onChange={handleChange}
+                                placeholder="••••••••"
+                                autoComplete="current-password"
+                            />
                         </div>
-                        <div className="form-actions">
-                            <button type="submit" className="btn btn-primary" disabled={submitting}>
-                                {submitting ? 'Logging In...' : 'Log In'}
+                        <div className="form-actions" style={{ paddingTop: '16px', marginTop: '8px', borderTop: 'none' }}>
+                            <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
+                                {submitting ? 'Signing in...' : 'Sign in'}
                             </button>
                         </div>
-                    </div>
                     </form>
                 </div>
             </div>

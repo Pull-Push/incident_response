@@ -144,6 +144,8 @@ export default function Users(){
 function UserTable({users}){
     if(users.length === 0) return <p className='empty-msg'>No Users Found.</p>
     return(
+        <div className='table-wrapper'>
+
         <table className='data-table'>
             <thead>
                 <tr>
@@ -176,5 +178,6 @@ function UserTable({users}){
                 ))}
             </tbody>
         </table>
+    </div>
     )
 }
