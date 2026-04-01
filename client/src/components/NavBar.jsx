@@ -1,10 +1,14 @@
+import { useContext } from "react"
 import {Link, useNavigate } from "react-router-dom"
+import { AuthContext } from "../context/AuthContext"
 
 export default function NavBar(){
     const navigate = useNavigate()
+    const { setCurrentUser } = useContext(AuthContext) 
 
     const logOut = () =>{
         localStorage.removeItem('token')
+        setCurrentUser(null)
         navigate('/')
     }
     return(
