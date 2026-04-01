@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom"
 import NavBar from "../components/NavBar"
 import { createCustomer } from "../services/api"
+import { AuthContext } from "../context/AuthContext";
 
 
 export default function CreateCustomer(){
     const navigate = useNavigate()
+    const {currentUser} = useContext(AuthContext)
     const [ customer, setCustomer ] = useState({
         name: "",
         dept: "",
@@ -18,7 +20,8 @@ export default function CreateCustomer(){
         phone: "",
         contract: false,
         lat: null,
-        long: null
+        long: null,
+        created_by: currentUser?.id
     })
 
     const handleChange = (e) => {

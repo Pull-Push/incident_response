@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import NavBar from '../components/NavBar'
-import { createIncident, getCustomers } from '../services/api'
+import { createIncident, getCustomers, getUsers } from '../services/api'
+import { AuthContext } from '../context/AuthContext'
 
 const INCIDENT_TYPES = [
     'Equipment Failure',
@@ -16,11 +17,13 @@ const INCIDENT_TYPES = [
 export default function CreateIncident() {
     const navigate = useNavigate()
     const location = useLocation()
+    const {currentUser} = useContext(AuthContext)
 
     // Support pre-filling from IndyCustomer page
     const prefill = location.state || {}
 
     const [customers, setCustomers] = useState([])
+    const [service, setService] = useState([])
     const [form, setForm] = useState({
         customer_id: prefill.customer_id || '',
         make: '',
@@ -32,13 +35,15 @@ export default function CreateIncident() {
         water_damage: false,
         notes: '',
         tech_assigned: '',
-        staus: ''
+        status: '', 
+        created_by: currentUser?.id
     })
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState(null)
 
     useEffect(() => {
         getCustomers().then(setCustomers).catch(console.error)
+        getTechnicians()
     }, [])
 
     const handleChange = (e) => {
@@ -60,7 +65,15 @@ export default function CreateIncident() {
             setSubmitting(false)
         }
     }
-
+    const getTechnicians = async () =>{
+        try {
+            const data = await getUsers()
+            const techs = data.filter(t => t.is_service || t.is_manager)
+            setService(techs)
+        } catch (error) {
+            console.error("Failed to fetch service techs", error)
+        }
+    }
     return (
         <div className="page-main">
             <NavBar />
@@ -130,7 +143,18 @@ export default function CreateIncident() {
                             </div>
                         </div>
                     </div>
-
+                    <div className="form-section">
+                        <h3>Technician:</h3>
+                        <div className="form-group">
+                            <label htmlFor="tech_assigned">Tech Assigned</label>
+                            <select name="tech_assigned" id="tech_assigned" value={form.tech_assigned} onChange={handleChange}>
+                                <option value="">Select a technician...</option>
+                                {service.map(s => (
+                                    <option key={s.id} value={s.id}>{s.employee_number} - {s.first_name} {s.last_name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <div className="form-section">
                         <h3>Notes</h3>
                         <div className="form-group">
