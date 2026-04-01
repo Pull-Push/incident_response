@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
-import { getCustomer, getIncidents } from '../services/api'
+import { getCustomer, getIncidents, updateCustomer } from '../services/api'
 
 export default function IndyCustomer() {
     const { id } = useParams()
@@ -10,6 +10,9 @@ export default function IndyCustomer() {
     const [incidents, setIncidents] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [editMode, setEditMode] = useState(false)
+    const [save, setSaving] = useState(false)
+    const [custInfo, setCustInfo] = useState(null)
 
     useEffect(() => {
         const load = async () => {
@@ -20,6 +23,7 @@ export default function IndyCustomer() {
                     getIncidents()
                 ])
                 setCustomer(customerData)
+                setCustInfo(customerData)
                 // Filter incidents belonging to this customer
                 setIncidents(allIncidents.filter(i => i.customer_id === parseInt(id)))
             } catch (err) {
@@ -30,7 +34,30 @@ export default function IndyCustomer() {
         }
         load()
     }, [id])
+    
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target
+        setCustInfo(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+    }
 
+    const handleSave = async () => {
+        try {
+            setSaving(true)
+            const updated = await updateCustomer(id, custInfo)
+            setCustomer(updated)
+            setEditMode(false)
+        } catch (error) {
+            setError(`Failed to update customer:${error.message}`)
+        }finally{
+            setSaving(false)
+        }
+    }
+    
+    const toggleEdit = () => setEditMode(!editMode)
+    const cancelEdit = () => {
+        setCustInfo(customer)
+        toggleEdit()
+    }
     if (loading) return <div className="page-main"><NavBar /><div className="loading">Loading...</div></div>
     if (error) return <div className="page-main"><NavBar /><div className="error-banner">{error}</div></div>
     if (!customer) return <div className="page-main"><NavBar /><div className="error-banner">Customer not found.</div></div>
@@ -87,8 +114,15 @@ export default function IndyCustomer() {
                             <p>{customer.notes}</p>
                         </div>
                     )}
+
+                <div className='detail-card'>
+                    <h3>Timeline:</h3>
+                    <p><strong>Created By:</strong>{customer.created_by_name}</p>
+                    <p><strong>Created:</strong>{new Date(customer.created_at).toLocaleString()}</p>
+                    <p><strong>Updated:</strong>{new Date(customer.updated_at).toLocaleString()}</p>
                 </div>
 
+                </div>
                 <div className="section">
                     <div className="section-header">
                         <h2>Active Incidents ({activeIncidents.length})</h2>
@@ -154,7 +188,77 @@ export default function IndyCustomer() {
                         </table>
                     </div>
                 )}
+                {editMode ? (
+        <form className="form-card">
+        <div className="form-section">
+            <h3>User Details</h3>
+            <div className="form-group">
+                <label htmlFor="name">Name</label>
+                <input type="text" name="name" id="name" required value={custInfo.name} onChange={handleChange} placeholder='ACME'/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="dept">Department</label>
+                <input type="text" name="dept" id="dept" required value={custInfo.dept} onChange={handleChange} placeholder='Police'/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="address">Address</label>
+                <input type="text" name="address" id="address" required value={custInfo.address} onChange={handleChange} placeholder='123 Main St.'/>
+            </div>
+            
+            <div className="form-group">
+                <label htmlFor="city">City</label>
+                <input type="text" name="city" id="city" required value={custInfo.city} onChange={handleChange} placeholder='Anytown'/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="state">State</label>
+                <input type="text" name="state" id="state" required value={custInfo.state} onChange={handleChange} placeholder='NJ'/>
+            </div>
+            
+            <div className="form-group">
+                <label htmlFor="zip">Zip Code</label>
+                <input type='text' name="zip" id="zip" value={custInfo.zip} onChange={handleChange} placeholder='01234'/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="contact">Contact</label>
+                <input type='text' name="contact" id="contact" value={custInfo.contact} onChange={handleChange} placeholder='John Smith'/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="phone">Phone</label>
+                <input type='tel' name="phone" id="phone" value={custInfo.phone} onChange={handleChange} placeholder='212-123-4567'/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="contract">Service</label>
+                <input type='checkbox' name="contract" id="contract" checked={custInfo.contract} onChange={handleChange}/>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="lat">Latitude</label>
+                <input type='text' name="lat" id="lat"  value={custInfo.lat} onChange={handleChange} placeholder='41.087608536537'/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="long">Longitude</label>
+                <input type='text' name="long" id="long"  value={custInfo.long} onChange={handleChange} placeholder='-73.993761493427'/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="notes">Notes</label>
+                <textarea name="notes" id="notes" value={custInfo.notes} onChange={handleChange}></textarea>
             </div>
         </div>
+        <div className="form-actions">
+            <button onClick={()=> handleSave()} className="btn btn-primary" disabled={save}>
+                {save ? 'Saving...' : 'Save Customer'}
+            </button>
+            <button className='btn btn-sm' onClick={()=> cancelEdit()}>Cancel</button>
+        </div>
+    </form>
+            ):(
+            <button className='btn btn-sm' onClick={()=> toggleEdit()}>Edit Customer</button>
+            )}
+        </div>
+            </div>
     )
 }
