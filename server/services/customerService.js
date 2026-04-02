@@ -16,7 +16,7 @@ async function getCustomers(){
 async function getIndyCustomer(customer_id) {
     try {
         const result = await pool.query(
-            `SELECT *, users.first_name || ' ' || users.last_name AS created_by_name 
+            `SELECT customers.*, users.first_name || ' ' || users.last_name AS created_by_name 
             FROM customers 
             LEFT JOIN users ON customers.created_by = users.id
             WHERE customers.id = $1`,

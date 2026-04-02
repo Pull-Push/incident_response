@@ -71,7 +71,7 @@ export default function IndyCustomer() {
             <div className="page-content">
                 <div className="page-header">
                     <div>
-                        <button className="btn btn-sm" onClick={() => navigate('/customers')}>← Back</button>
+                        <button className="btn btn-sm btn-secondary" onClick={() => navigate(-1)}>← Back</button>
                         <h1>{customer.name}</h1>
                         {customer.dept && <p className="subtitle">{customer.dept}</p>}
                     </div>
@@ -108,6 +108,12 @@ export default function IndyCustomer() {
                         <p>{customer.phone}</p>
                     </div>
 
+                <div className='detail-card'>
+                    <h3>Timeline:</h3>
+                    <p><strong>Created By:</strong>{customer.created_by_name}</p>
+                    <p><strong>Created:</strong>{new Date(customer.created_at).toLocaleString()}</p>
+                    <p><strong>Updated:</strong>{new Date(customer.updated_at).toLocaleString()}</p>
+                </div>
                     {customer.notes && (
                         <div className="detail-card detail-card-wide">
                             <h3>Notes</h3>
@@ -115,12 +121,6 @@ export default function IndyCustomer() {
                         </div>
                     )}
 
-                <div className='detail-card'>
-                    <h3>Timeline:</h3>
-                    <p><strong>Created By:</strong>{customer.created_by_name}</p>
-                    <p><strong>Created:</strong>{new Date(customer.created_at).toLocaleString()}</p>
-                    <p><strong>Updated:</strong>{new Date(customer.updated_at).toLocaleString()}</p>
-                </div>
 
                 </div>
                 <div className="section">
@@ -237,7 +237,7 @@ export default function IndyCustomer() {
                 <input type='tel' name="phone" id="phone" value={custInfo.phone} onChange={handleChange} placeholder='212-123-4567'/>
             </div>
             <div className="form-group">
-                <label htmlFor="contract">Service</label>
+                <label htmlFor="contract">Contract</label>
                 <input type='checkbox' name="contract" id="contract" checked={custInfo.contract} onChange={handleChange}/>
             </div>
 
@@ -262,7 +262,9 @@ export default function IndyCustomer() {
         </div>
     </form>
             ):(
-            <button className='btn btn-sm' onClick={()=> toggleEdit()}>Edit Customer</button>
+            <div className='action-buttons'> 
+                <button className='btn btn-sm' onClick={()=> toggleEdit()}>Edit Customer</button>
+            </div>
             )}
         </div>
             </div>

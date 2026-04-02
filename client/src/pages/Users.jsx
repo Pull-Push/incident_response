@@ -75,10 +75,10 @@ export default function Users(){
 
 
     return(
-        <div className='userPageMain'>
+        <div className='page-main'>
             <NavBar />
-            <div className='userPage-content'>
-                <div className='userPage-header'>
+            <div className='page-content'>
+                <div className='page-header'>
                     <h1>Users</h1>
                     <button className="btn btn-primary" onClick={() => toggleCreateUser()}>+ Create User</button>
                 </div>

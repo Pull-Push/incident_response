@@ -68,8 +68,8 @@ button:focus-visible {
 } */
 /* CUSTOM BELOW THIS LINE */
 /* ═══════════════════════════════════════════════════════════
-    ICR — INCIDENT COMMAND RESPONSE
-    Design System: Command Center / Enterprise SaaS
+   ICR — INCIDENT COMMAND RESPONSE
+   Design System: Command Center / Enterprise SaaS
    ═══════════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap');
@@ -427,7 +427,7 @@ p.subtitle {
 }
 
 .data-table th {
-  text-align: left;
+  text-align: center;
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 600;
@@ -442,6 +442,7 @@ p.subtitle {
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-subtle);
   vertical-align: middle;
+  text-align: center;
 }
 
 .data-table td:first-child {
@@ -478,7 +479,7 @@ p.subtitle {
 /* ── DETAIL GRID ───────────────────────────────────────── */
 .detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 32px;
 }
@@ -597,6 +598,8 @@ h2 {
   border-radius: var(--radius-lg);
   padding: 32px;
   max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .form-section {
@@ -940,6 +943,179 @@ h2 {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border-strong);
+}
+
+/* ── NAV LOGO ──────────────────────────────────────────── */
+.nav-logo {
+  height: 28px;
+  width: 28px;
+  object-fit: contain;
+  filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(170deg);
+  opacity: 0.9;
+}
+
+.nav-brand {
+  display: none; /* hidden since logo replaces text brand */
+}
+
+/* ── WEATHER & MAP ─────────────────────────────────────── */
+.weather-map-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.weather-section,
+.map-section {
+  width: 100%;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.weather-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.weather-card:hover {
+  border-color: var(--border-default);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.weather-card-header {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.weather-day-name {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.weather-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.weather-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  /* NWS icons have white bg — give them a subtle dark pill */
+  background: var(--bg-elevated);
+  padding: 4px;
+  border: 1px solid var(--border-subtle);
+}
+
+.weather-temps {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.weather-temp-high {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.weather-temp-low {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.weather-forecast {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.weather-card-detail {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+.weather-card-detail p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.map-container {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.map-canvas {
+  width: 100%;
+  height: 480px;
+}
+
+@media (max-width: 768px) {
+  .weather-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .map-canvas {
+    height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .weather-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── LINK RESET ────────────────────────────────────────── */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Ensure btn links never show browser default purple */
+a.btn-sm,
+a.btn,
+a.btn-primary,
+a.btn-secondary {
+  color: inherit;
+}
+
+a.btn-sm {
+  color: var(--text-secondary);
+  border-color: var(--border-default);
+  background: transparent;
+}
+
+a.btn-sm:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--border-subtle);
+}
+
+a.btn-primary {
+  color: var(--text-dark);
 }
 
 /* ── UTILITY ───────────────────────────────────────────── */

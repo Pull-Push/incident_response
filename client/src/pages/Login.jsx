@@ -2,6 +2,7 @@ import { logIn, getMe } from "../services/api";
 import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
+import mainLogo from "../assets/images/main_logo.png"
 
 export default function Login() {
     const [error, setError] = useState(null)
@@ -38,8 +39,8 @@ export default function Login() {
         <div className="page-main">
             <div className="login-container">
                 <div className="login-logo">
-                    <div className="login-logo-text">ICR</div>
-                    <div className="login-logo-sub">Incident Command Response</div>
+                    <img src={mainLogo} alt="ICR" style={{ height:'120px', objectFit:'contain'}}/>
+                    <div className="login-logo-sub">Incident Control & Response</div>
                 </div>
 
                 {error && <div className="error-banner">{error}</div>}
