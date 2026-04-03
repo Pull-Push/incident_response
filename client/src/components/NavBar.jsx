@@ -21,8 +21,8 @@ export default function NavBar() {
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/customers">Customers</Link>
                 <Link to="/incidents">Incidents</Link>
-                <Link to="/profile">Profile</Link>
                 <Link to="/users">Users</Link>
+                <Link to="/profile">Profile</Link>
                 <button className="btn-small" onClick={logOut}>Log Out</button>
             </div>
         </div>

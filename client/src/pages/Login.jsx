@@ -27,7 +27,7 @@ export default function Login() {
             setCurrentUser(user)
             navigate('/dashboard')
         } catch (err) {
-            setError('Invalid email or password. Please try again.')
+            setError(err.message)
             console.error(err)
             setForm(prev => ({ ...prev, password: '' }))
         } finally {

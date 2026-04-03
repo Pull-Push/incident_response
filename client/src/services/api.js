@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050'
-
+console.log('the base url is...', API_BASE_URL)
 
 const getAuthHeader = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
