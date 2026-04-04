@@ -18,6 +18,24 @@ async function getIncidents() {
     }
 }
 
+//get active incidents
+async function getActiveIncidents() {
+    try {
+        const result = await pool.query(
+            `SELECT i.*, c.name AS customer, u.first_name || ' ' || u.last_name AS technician
+            FROM incidents i
+            LEFT JOIN customers c on i.customer_id = c.id
+            LEFT JOIN users u on i.tech_assigned = u.id
+            WHERE i.status IN ('open', 'pending', 'in_progress')
+            ORDER BY i.created_at DESC`
+        )
+        return result.rows
+    } catch (error) {
+        console.error('Failed to get active incidents')
+        throw error
+    }
+}
+
 
 //get singe incident
 async function getIndyIncident(incident_id) {
@@ -83,4 +101,4 @@ async function updateIncident(incident_id, updateData) {
     }
 }
 
-module.exports = { getIncidents, getIndyIncident, insertIncident, updateIncident }
+module.exports = { getIncidents, getIndyIncident, insertIncident, updateIncident, getActiveIncidents }

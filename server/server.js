@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5050
 const allowedOrigins = [
     'http://localhost:5173',
     // ipconfig getifaddr en0 - to get local network address - MAKE SURE IT MATCHES client/.env ADDRESS
-    `http://192.168.0.40:5173`, 
+    // `http://192.168.0.40:5173`, 
     process.env.FRONTEND_URL
 ].filter(Boolean)
 

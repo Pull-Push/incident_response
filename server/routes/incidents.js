@@ -3,13 +3,13 @@ const router = express.Router()
 const {authVerify, managerVerify} = require('../middleware/auth')
 
 const { getLocalWeather } = require('../services/weatherService')
-const { getIncidents, getIndyIncident, insertIncident, updateIncident } = require('../services/incidentService')
+const { getIncidents, getIndyIncident, insertIncident, updateIncident, getActiveIncidents } = require('../services/incidentService')
 
 // GET DASHBOARD (weather)
 router.get('/dashboard', authVerify, async (req, res) => {
     try {
-        const weatherResult = await getLocalWeather(req.body)
-        res.json(weatherResult)
+        const [weatherResult, activeIncidents ]= await Promise.all([getLocalWeather(req.body), getActiveIncidents()])
+        res.json({weatherResult, activeIncidents})
     } catch (err) {
         console.error(err)
         res.status(500).json({ error: 'Failed to fetch weather' })

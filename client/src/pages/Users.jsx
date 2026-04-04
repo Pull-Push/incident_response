@@ -130,6 +130,7 @@ export default function Users(){
             <button type="submit" className="btn btn-primary" disabled={submitting}>
                 {submitting ? 'Creating...' : 'Create User'}
             </button>
+            <button type='button' className='btn btn-secondary' onClick={() => {resetForm(); toggleCreateUser()}}> Cancel</button>
         </div>
     </form>    
                 </div>}
