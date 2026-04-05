@@ -63,6 +63,44 @@ export const updateCustomer = async (id, customer) => {
     return response.json()
 }
 
+//----SUBSITES-------------------
+export const getSubsites = async (customer_id) =>{
+    const response = await fetch(`${API_BASE_URL}/api/subsites/${customer_id}`,{
+        headers:getAuthHeader()
+    })
+    if(!response.ok) throw new Error('Failed to fetch subsites')
+        return response.json()
+}
+
+export const createSubsite = async (subsite_info )=>{
+    const response = await fetch(`${API_BASE_URL}/api/subsites`, {
+        method:'POST',
+        headers:getAuthHeader(),
+        body:JSON.stringify(subsite_info)
+    })
+    if (!response.ok) throw new Error('Failed to create subsite')
+        return response.json()
+}
+
+export const updateSubsite = async (subsite_id, updateInfo) =>{
+    const response = await fetch(`${API_BASE_URL}/api/subsites/${subsite_id}`,{
+        method:'PATCH',
+        headers:getAuthHeader(),
+        body:JSON.stringify(updateInfo)
+    })
+    if(!response.ok) throw new Error('Failed to update subsite')
+        return response.json()
+}
+
+export const deactivateSubsite = async (subsite_id) => {
+    const response = await fetch(`${API_BASE_URL}/api/subsites/${subsite_id}/deactivate`,{
+        method:'PATCH',
+        headers:getAuthHeader()
+    })
+    if(!response.ok) throw new Error('Failed to deactivate subsite')
+        return response.json()
+}
+
 // ─── INCIDENTS ───────────────────────────────────────────────
 export const getIncidents = async () => {
     const response = await fetch(`${API_BASE_URL}/api/incidents`,{

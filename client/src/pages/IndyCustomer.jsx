@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
-import { getCustomer, getIncidents, updateCustomer } from '../services/api'
+import { getCustomer, getIncidents, updateCustomer, getSubsites, createSubsite, updateSubsite, deactivateSubsite } from '../services/api'
 
 export default function IndyCustomer() {
     const { id } = useParams()
@@ -9,21 +9,41 @@ export default function IndyCustomer() {
     const [customer, setCustomer] = useState(null)
     const [incidents, setIncidents] = useState([])
     const [loading, setLoading] = useState(true)
+    const [subsiteLoading, setSubsiteLoading ] = useState(false)
     const [error, setError] = useState(null)
     const [editMode, setEditMode] = useState(false)
     const [save, setSaving] = useState(false)
+    const [subsiteSaving, setSubsiteSaving ] = useState(false)
     const [custInfo, setCustInfo] = useState(null)
+    const [subsites, setSubsites ] = useState([])
+    const [showSubsiteForm, setShowSubsiteForm ] = useState(false)
+    const [editingSubsite, setEditingSubsite ] = useState(null)
+    const [subsiteForm, setSubsiteForm] = useState({
+            customer_id: id,
+            address: '',
+            city: '',
+            state: '',
+            zip: '',
+            notes: '',
+            contact: '',
+            phone: '',
+            lat: '',
+            long:'',
+            name:''
+        })
 
     useEffect(() => {
         const load = async () => {
             try {
                 setLoading(true)
-                const [customerData, allIncidents] = await Promise.all([
+                const [customerData, allIncidents, subsiteData] = await Promise.all([
                     getCustomer(id),
-                    getIncidents()
+                    getIncidents(),
+                    getSubsites(id)
                 ])
                 setCustomer(customerData)
                 setCustInfo(customerData)
+                setSubsites(subsiteData)
                 // Filter incidents belonging to this customer
                 setIncidents(allIncidents.filter(i => i.customer_id === parseInt(id)))
             } catch (err) {
@@ -35,9 +55,28 @@ export default function IndyCustomer() {
         load()
     }, [id])
     
+    const loadSubsites = async(id) =>{
+        setSubsiteLoading(true);
+            setError(null);
+            try {
+                const data = await getSubsites(id);
+                setSubsites(data)
+            } catch (error) {
+                console.error('Error loading subsites', error)
+                setError('Failed to load subsites, Please try again')
+            }finally{
+                setSubsiteLoading(false)
+            }
+        }
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
         setCustInfo(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+    }
+
+    const handleSubsiteChange = (e) =>{
+        const { name, value, type, checked } = e.target
+        setSubsiteForm(prev => ({...prev, [name]: type === 'checkbox' ? checked: value}))
     }
 
     const handleSave = async () => {
@@ -52,12 +91,51 @@ export default function IndyCustomer() {
             setSaving(false)
         }
     }
-    
+    const handleSubsiteSubmit = async (subsiteInfo) => {
+        try {
+            setSubsiteSaving(true)
+            await createSubsite(subsiteInfo)
+            loadSubsites(id)
+        } catch (error) {
+            setError(`Failed to create subsite: ${error.message}`)
+        }finally{
+            setSubsiteSaving(false)
+        }
+    }
+
+    const handleSubsiteUpdate = async (subsite_id, updateInfo) => {
+        try {
+            setSubsiteSaving(true)
+            await updateSubsite(subsite_id, updateInfo)
+            loadSubsites(id)
+        } catch (error) {
+            setError(`Failed to update subsite: ${error.message}`)
+        }finally{
+            setSubsiteSaving(false)
+        }
+    }
+
+    const handleSubsiteDeactivate = async (subsite_id) => {
+        try {
+            setSubsiteSaving(true)
+            await deactivateSubsite(subsite_id)
+            loadSubsites(id)
+        } catch (error) {
+            setError(`Failed to deactivate subsite: ${error.message}`)
+        }finally{
+            setSubsiteSaving(false)
+        }
+    }
+
+
     const toggleEdit = () => setEditMode(!editMode)
+    
     const cancelEdit = () => {
         setCustInfo(customer)
         toggleEdit()
     }
+
+
     if (loading) return <div className="page-main"><NavBar /><div className="loading">Loading...</div></div>
     if (error) return <div className="page-main"><NavBar /><div className="error-banner">{error}</div></div>
     if (!customer) return <div className="page-main"><NavBar /><div className="error-banner">Customer not found.</div></div>
@@ -197,7 +275,7 @@ export default function IndyCustomer() {
                 {editMode ? (
         <form className="form-card">
         <div className="form-section">
-            <h3>User Details</h3>
+            <h3>Customer Details</h3>
             <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input type="text" name="name" id="name" required value={custInfo.name} onChange={handleChange} placeholder='ACME'/>
@@ -267,6 +345,29 @@ export default function IndyCustomer() {
             </div>
             )}
         </div>
+        <SubsiteTable subsites = {subsites} subsiteForm={subsiteForm} handleSubsiteChange={handleSubsiteChange} handleSubsiteSubmit={handleSubsiteSubmit}
+                        handleSubsiteUpdate={handleSubsiteUpdate} handleSubsiteDeactivate={handleSubsiteDeactivate} showSubsiteForm={showSubsiteForm}
+                        setShowSubsiteForm={setShowSubsiteForm} editingSubsite={editingSubsite} setEditingSubsite={setEditingSubsite} subsiteLoading={subsiteLoading} 
+                        subsiteSaving={subsiteSaving} />
             </div>
+    )
+}
+
+function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsiteSubmit, handleSubsiteUpdate, handleSubsiteDeactivate, showSubsiteForm,
+                        setShowSubsiteForm, editingSubsite, setEditingSubsite, subsiteLoading, subsiteSaving}){
+                            if (subsiteLoading) return <div className="loading">Loading subsites...</div>
+                            return(
+                                <div className='subsite-content'>
+            <div className='subsite-header'>
+                <button onClick={() => setShowSubsiteForm(!showSubsiteForm)}>Create Subsite</button>
+            </div>
+                { subsites.length === 0 ? <p className='empty-msg'>No Subsites Found.</p>:
+        <div className='table-wrapper'>
+            <table className='data-table'>
+
+            </table>
+        </div>
+                }
+        </div>
     )
 }

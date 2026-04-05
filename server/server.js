@@ -6,6 +6,7 @@ const pool = require('./db.js');
 const incidentRoutes = require('./routes/incidents')
 const customerRoutes = require('./routes/customers')
 const userRoutes = require('./routes/users')
+const subsiteRoutes = require('./routes/subsites')
 const authRoutes = require('./routes/auth')
 
 const app = express()
@@ -37,6 +38,7 @@ app.use(express.json())
 app.use('/api', incidentRoutes)
 app.use('/api', customerRoutes)
 app.use('/api', userRoutes)
+app.use('/api', subsiteRoutes)
 app.use('/api', authRoutes)
 
 
