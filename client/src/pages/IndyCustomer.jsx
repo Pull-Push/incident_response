@@ -79,6 +79,11 @@ export default function IndyCustomer() {
         setSubsiteForm(prev => ({...prev, [name]: type === 'checkbox' ? checked: value}))
     }
 
+    const handleSubsiteUpdateChange = (e) => {
+        const { name, value } = e.target
+        setEditingSubsite(prev => ({ ...prev, [name]: value }))
+    }
+    
     const handleSave = async () => {
         try {
             setSaving(true)
@@ -100,6 +105,7 @@ export default function IndyCustomer() {
             setError(`Failed to create subsite: ${error.message}`)
         }finally{
             setSubsiteSaving(false)
+            setShowSubsiteForm(false)
         }
     }
 
@@ -129,7 +135,6 @@ export default function IndyCustomer() {
 
 
     const toggleEdit = () => setEditMode(!editMode)
-    
     const cancelEdit = () => {
         setCustInfo(customer)
         toggleEdit()
@@ -344,16 +349,16 @@ export default function IndyCustomer() {
                 <button className='btn btn-sm' onClick={()=> toggleEdit()}>Edit Customer</button>
             </div>
             )}
-        </div>
         <SubsiteTable subsites = {subsites} subsiteForm={subsiteForm} handleSubsiteChange={handleSubsiteChange} handleSubsiteSubmit={handleSubsiteSubmit}
                         handleSubsiteUpdate={handleSubsiteUpdate} handleSubsiteDeactivate={handleSubsiteDeactivate} showSubsiteForm={showSubsiteForm}
                         setShowSubsiteForm={setShowSubsiteForm} editingSubsite={editingSubsite} setEditingSubsite={setEditingSubsite} subsiteLoading={subsiteLoading} 
-                        subsiteSaving={subsiteSaving} />
+                        subsiteSaving={subsiteSaving} handleSubsiteUpdateChange={handleSubsiteUpdateChange}/>
             </div>
+        </div>
     )
 }
 
-function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsiteSubmit, handleSubsiteUpdate, handleSubsiteDeactivate, showSubsiteForm,
+function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsiteSubmit, handleSubsiteUpdate, handleSubsiteUpdateChange,handleSubsiteDeactivate, showSubsiteForm,
                         setShowSubsiteForm, editingSubsite, setEditingSubsite, subsiteLoading, subsiteSaving}){
                             if (subsiteLoading) return <div className="loading">Loading subsites...</div>
                             return(
@@ -361,10 +366,129 @@ function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsite
             <div className='subsite-header'>
                 <button onClick={() => setShowSubsiteForm(!showSubsiteForm)}>Create Subsite</button>
             </div>
+                {showSubsiteForm && <div className='subsite-form'>
+                    <form className='form-card' onSubmit={(e) => { e.preventDefault(); handleSubsiteSubmit(subsiteForm) }}>
+                        <div className='form-section'>
+                            <h3>Subsite Details</h3>
+                            <div className='form-group'>
+                                <label htmlFor="name">Name</label>
+                                <input type="text" name='name' id='subsiteName' required value={subsiteForm.name} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="address">Address</label>
+                                <input type="text" name='address' id='subsiteAddress' required value={subsiteForm.address} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="city">City</label>
+                                <input type="text" name='city' id='subsiteCity' required value={subsiteForm.city} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="state">State</label>
+                                <input type="text" name='state' id='subsiteState' required value={subsiteForm.state} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="zip">Zip</label>
+                                <input type="text" name='zip' id='subsiteZip' required value={subsiteForm.zip} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="contact">Contact</label>
+                                <input type="text" name='contact' id='subsiteContact' required value={subsiteForm.contact} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="phone">Phone</label>
+                                <input type="text" name='phone' id='subsitePhone' required value={subsiteForm.phone} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="lat">Lat</label>
+                                <input type="text" name='lat' id='subsiteLat' value={subsiteForm.lat} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="long">Long</label>
+                                <input type="text" name='long' id='subsiteLong' value={subsiteForm.long} onChange={handleSubsiteChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor="notes">Notes</label>
+                                <textarea name="notes" id="subsiteNotes" value={subsiteForm.notes} onChange={handleSubsiteChange}></textarea>
+                            </div>
+                            <div className='form-actions'>
+                                <button type="submit" className="btn btn-primary" disabled={subsiteSaving}>
+                                    {subsiteSaving ? 'Creating...' : 'Create Subsite'}
+                                </button>
+                                <button type="button" className="btn btn-sm" disabled={subsiteSaving} onClick={() => setShowSubsiteForm(!showSubsiteForm)}>Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    </div>}
                 { subsites.length === 0 ? <p className='empty-msg'>No Subsites Found.</p>:
         <div className='table-wrapper'>
             <table className='data-table'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Contact</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {subsites.map(subsite =>(
+                        <tr key={subsite.id}>
+                            {editingSubsite?.id === subsite.id ? (
+                                <td colSpan={7}>
+                            <div className='subsite-edit-form'>
+                                <form className='edit-form-card' onSubmit={(e) => { e.preventDefault(); handleSubsiteUpdate(subsite.id, editingSubsite) }}>
+                                    <div className='form-group'>
+                                        <label htmlFor="name">Name</label>
+                                        <input type="text" name='name' id='subsiteName' required value={editingSubsite.name} onChange={handleSubsiteUpdateChange} placeholder={subsite.name}/>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="name">Address</label>
+                                        <input type="text" name='address' id='subsiteAddress' required value={editingSubsite.address} onChange={handleSubsiteUpdateChange} placeholder={subsite.address}/>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="name">City</label>
+                                        <input type="text" name='city' id='subsiteCity' required value={editingSubsite.city} onChange={handleSubsiteUpdateChange} placeholder={subsite.city}/>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="name">State</label>
+                                        <input type="text" name='state' id='subsiteState' required value={editingSubsite.state} onChange={handleSubsiteUpdateChange} placeholder={subsite.state}/>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="name">Contact</label>
+                                        <input type="text" name='contact' id='subsiteContact' required value={editingSubsite.contact} onChange={handleSubsiteUpdateChange} placeholder={subsite.contact}/>
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="name">Phone</label>
+                                        <input type="text" name='phone' id='subsitePhone' required value={editingSubsite.phone} onChange={handleSubsiteUpdateChange} placeholder={subsite.phone}/>
+                                    </div>
+                                    <div className='form-actions'>
+                                        <button type="submit" className="btn btn-primary" disabled={subsiteSaving}>
+                                            {subsiteSaving ? 'Updating...' : 'Update Subsite'}
+                                        </button>
+                                        <button type="button" className="btn btn-sm" disabled={subsiteSaving} onClick={() => setEditingSubsite(null)}>Cancel</button>
+                                    </div>
+                                </form>
 
+                            </div>
+                            </td>
+                            ) :( 
+                                <>
+                                    <td>{subsite.name}</td>
+                                    <td>{subsite.address}</td>
+                                    <td>{subsite.city}</td>
+                                    <td>{subsite.state}</td>
+                                    <td>{subsite.contact}</td>
+                                    <td>{subsite.phone}</td>
+                                    <td><button onClick={() => setEditingSubsite(subsite)}>EDIT</button><button onClick={()=>handleSubsiteDeactivate(subsite.id)}>DELETE</button></td>
+                                </>
+                            )}
+                        </tr>
+                    ))}
+                </tbody>
             </table>
         </div>
                 }

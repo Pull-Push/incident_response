@@ -25,7 +25,7 @@ async function insertSubsite(subsite_info) {
             `INSERT INTO subsites (customer_id, address, city, state, zip, notes, contact, phone, lat, long, name)
             VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
             RETURNING *`,
-            [customer_id, address, city, state, zip, notes, contact, phone, lat, long, name]
+            [customer_id, address, city, state, zip, notes, contact, phone, lat || null, long || null, name]
         )
         return result.rows[0]
     } catch (error) {
