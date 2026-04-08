@@ -16,6 +16,23 @@ async function getSubsites(customer_id) {
         throw error
     }
 }
+//GET SINGLE SUBSITE
+async function getIndySubsite(subsite_id) {
+    try {
+        const result = await pool.query(
+            `SELECT *
+            FROM subsites
+            WHERE id = $1`,
+            [subsite_id]
+        )
+        return result.rows[0]
+    } catch (error) {
+        console.error('Failed to get subsite')
+        throw error
+    }
+}
+
+
 
 //CREATE SUBSITE
 async function insertSubsite(subsite_info) {
@@ -78,4 +95,4 @@ async function deactivateSubsite(subsite_id) {
     }
 }
 
-module.exports = { getSubsites, insertSubsite, updateSubsite, deactivateSubsite}
+module.exports = { getSubsites, getIndySubsite,insertSubsite, updateSubsite, deactivateSubsite}

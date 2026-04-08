@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050'
-console.log('the base url is...', API_BASE_URL)
+// console.log('the base url is...', API_BASE_URL)
 
 const getAuthHeader = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -69,6 +69,14 @@ export const getSubsites = async (customer_id) =>{
         headers:getAuthHeader()
     })
     if(!response.ok) throw new Error('Failed to fetch subsites')
+        return response.json()
+}
+
+export const getIndySubsite = async (subsite_id) => {
+    const response = await fetch(`${API_BASE_URL}/api/subsites/${subsite_id}`, {
+        headers:getAuthHeader()
+    })
+    if(!response.ok) throw new Error('Failed to fetch subsite')
         return response.json()
 }
 

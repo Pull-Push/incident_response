@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getSubsites, insertSubsite, updateSubsite, deactivateSubsite} = require('../services/subsiteService')
+const {getSubsites,getIndySubsite,  insertSubsite, updateSubsite, deactivateSubsite} = require('../services/subsiteService')
 const {authVerify } = require('../middleware/auth')
 
 
@@ -11,6 +11,16 @@ router.get('/subsites/:customer_id', authVerify, async(req, res) =>{
     } catch (error) {
         console.error(error)
         res.status(500).json({error: 'Failed to fetch subsites'})
+    }
+})
+
+router.get('/subsites/:id', authVerify, async(req, res) => {
+    try{
+        const site = await getIndySubsite(req.params.id)
+        res.json(site)
+    }catch(error) {
+        console.error(error)
+        res.status(500).json({error: 'Failed to fetch subsite'})
     }
 })
 
