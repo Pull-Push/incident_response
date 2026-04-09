@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {getSubsites,getIndySubsite,  insertSubsite, updateSubsite, deactivateSubsite} = require('../services/subsiteService')
 const {authVerify } = require('../middleware/auth')
+const { getLatLon } = require('../services/mapService') 
 
 
 router.get('/subsites/:customer_id', authVerify, async(req, res) =>{
@@ -15,7 +16,7 @@ router.get('/subsites/:customer_id', authVerify, async(req, res) =>{
 })
 
 router.get('/subsite/:id', authVerify, async(req, res) => {
-    console.log('params id is....', req.params.id)
+    // console.log('params id is....', req.params.id)
     try{
         const site = await getIndySubsite(req.params.id)
         res.json(site)
@@ -27,7 +28,21 @@ router.get('/subsite/:id', authVerify, async(req, res) => {
 
 router.post('/subsites', authVerify, async(req, res) =>{
     try {
-        const site = await insertSubsite(req.body)
+        const body = { ...req.body} //create a shallow copy of req.body - DO NOT MUTATE BODY DIRECTLY!!
+            if(body.lat == null || body.long == null){ // == catches both undefined and null
+                const addressInfo = {
+                    address: body.address,
+                    city: body.city,
+                    state: body.state,
+                    zip: body.zip
+                }
+        const [lat, long] = await getLatLon(addressInfo)
+            console.log('lat', lat)
+            body.lat = lat
+            body.long = long
+        }
+        console.log('from the subsite route file', body)
+        const site = await insertSubsite(body)
         res.status(201).json(site)
     } catch (error) {
         console.error(error)

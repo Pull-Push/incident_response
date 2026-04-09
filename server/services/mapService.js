@@ -6,6 +6,8 @@ const axios = require('axios')
 
 
 async function getLatLon(params) {
+    console.log(params)
+
     const address = params.address;
     const city = params.city;
     const ST = params.state;

@@ -26,7 +26,7 @@ async function getIndySubsite(subsite_id) {
             WHERE s.id = $1`,
             [subsite_id]
         )
-        console.log('service result', result)
+        // console.log('service result', result)
         return result.rows[0]
     } catch (error) {
         console.error('Failed to get subsite')
