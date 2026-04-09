@@ -14,7 +14,8 @@ router.get('/subsites/:customer_id', authVerify, async(req, res) =>{
     }
 })
 
-router.get('/subsites/:id', authVerify, async(req, res) => {
+router.get('/subsite/:id', authVerify, async(req, res) => {
+    console.log('params id is....', req.params.id)
     try{
         const site = await getIndySubsite(req.params.id)
         res.json(site)

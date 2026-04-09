@@ -358,8 +358,7 @@ export default function IndyCustomer() {
     )
 }
 
-function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsiteSubmit, handleSubsiteUpdate, handleSubsiteUpdateChange,handleSubsiteDeactivate, showSubsiteForm,
-                        setShowSubsiteForm, editingSubsite, setEditingSubsite, subsiteLoading, subsiteSaving}){
+function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsiteSubmit, showSubsiteForm, setShowSubsiteForm, subsiteLoading, subsiteSaving}){
                             if (subsiteLoading) return <div className="loading">Loading subsites...</div>
                             return(
                                 <div className='subsite-content'>
@@ -435,59 +434,19 @@ function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsite
                     </tr>
                 </thead>
                 <tbody>
-                    {subsites.map(subsite =>(
-                        <tr key={subsite.id}>
-                            {editingSubsite?.id === subsite.id ? (
-                                <td colSpan={7}>
-                            <div className='subsite-edit-form'>
-                                <form className='edit-form-card' onSubmit={(e) => { e.preventDefault(); handleSubsiteUpdate(subsite.id, editingSubsite) }}>
-                                    <div className='form-group'>
-                                        <label htmlFor="name">Name</label>
-                                        <input type="text" name='name' id='subsiteName' required value={editingSubsite.name} onChange={handleSubsiteUpdateChange} placeholder={subsite.name}/>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label htmlFor="name">Address</label>
-                                        <input type="text" name='address' id='subsiteAddress' required value={editingSubsite.address} onChange={handleSubsiteUpdateChange} placeholder={subsite.address}/>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label htmlFor="name">City</label>
-                                        <input type="text" name='city' id='subsiteCity' required value={editingSubsite.city} onChange={handleSubsiteUpdateChange} placeholder={subsite.city}/>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label htmlFor="name">State</label>
-                                        <input type="text" name='state' id='subsiteState' required value={editingSubsite.state} onChange={handleSubsiteUpdateChange} placeholder={subsite.state}/>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label htmlFor="name">Contact</label>
-                                        <input type="text" name='contact' id='subsiteContact' required value={editingSubsite.contact} onChange={handleSubsiteUpdateChange} placeholder={subsite.contact}/>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label htmlFor="name">Phone</label>
-                                        <input type="text" name='phone' id='subsitePhone' required value={editingSubsite.phone} onChange={handleSubsiteUpdateChange} placeholder={subsite.phone}/>
-                                    </div>
-                                    <div className='form-actions'>
-                                        <button type="submit" className="btn btn-primary" disabled={subsiteSaving}>
-                                            {subsiteSaving ? 'Updating...' : 'Update Subsite'}
-                                        </button>
-                                        <button type="button" className="btn btn-sm" disabled={subsiteSaving} onClick={() => setEditingSubsite(null)}>Cancel</button>
-                                    </div>
-                                </form>
-
-                            </div>
-                            </td>
-                            ) :( 
-                                <>
-                                    <td>{subsite.name}</td>
-                                    <td>{subsite.address}</td>
-                                    <td>{subsite.city}</td>
-                                    <td>{subsite.state}</td>
-                                    <td>{subsite.contact}</td>
-                                    <td>{subsite.phone}</td>
-                                    <td><button onClick={() => setEditingSubsite(subsite)}>EDIT</button><button onClick={()=>handleSubsiteDeactivate(subsite.id)}>DELETE</button></td>
-                                </>
-                            )}
+                    {subsites.map(s =>(
+                        <tr key={s.id}>
+                            {console.log('subsite id', s.id)}
+                            <td>{s.name}</td>
+                            <td>{s.address}</td>
+                            <td>{s.city}</td>
+                            <td>{s.state}</td>
+                            <td>{s.contact}</td>
+                            <td>{s.phone}</td>
+                            <td><Link to={`/subsite/${s.id}`} className='btn btn-sm'>View</Link></td>
+                            
                         </tr>
-                    ))}
+                            ))}
                 </tbody>
             </table>
         </div>

@@ -14,6 +14,7 @@ import IndyUser from './pages/IndyUser'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import AuthProvider from './context/AuthProvider'
+import IndySubsite from './pages/IndySubsite'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path='/users' element={<ProtectedRoute><Users /></ProtectedRoute>} />
         <Route path='/users/:id' element={<ProtectedRoute><IndyUser /></ProtectedRoute>} />
         <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path='/subsite/:subsite_id' element={<ProtectedRoute><IndySubsite/></ProtectedRoute>} />
         {/* <Route path='*' element={<NotFound />} />  */}
       </Routes>
     </BrowserRouter>

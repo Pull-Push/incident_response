@@ -20,11 +20,13 @@ async function getSubsites(customer_id) {
 async function getIndySubsite(subsite_id) {
     try {
         const result = await pool.query(
-            `SELECT *
-            FROM subsites
-            WHERE id = $1`,
+            `SELECT s.*, c.name AS customer
+            FROM subsites s
+            LEFT JOIN customers c ON s.customer_id = c.id
+            WHERE s.id = $1`,
             [subsite_id]
         )
+        console.log('service result', result)
         return result.rows[0]
     } catch (error) {
         console.error('Failed to get subsite')

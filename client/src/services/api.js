@@ -65,6 +65,7 @@ export const updateCustomer = async (id, customer) => {
 
 //----SUBSITES-------------------
 export const getSubsites = async (customer_id) =>{
+    // console.log('customer_id is...', customer_id) WORKS!!!!
     const response = await fetch(`${API_BASE_URL}/api/subsites/${customer_id}`,{
         headers:getAuthHeader()
     })
@@ -73,7 +74,8 @@ export const getSubsites = async (customer_id) =>{
 }
 
 export const getIndySubsite = async (subsite_id) => {
-    const response = await fetch(`${API_BASE_URL}/api/subsites/${subsite_id}`, {
+    console.log('after indy subsite, api.js subsite id is...', subsite_id) 
+    const response = await fetch(`${API_BASE_URL}/api/subsite/${subsite_id}`, {
         headers:getAuthHeader()
     })
     if(!response.ok) throw new Error('Failed to fetch subsite')
