@@ -27,9 +27,10 @@ router.get('/subsite/:id', authVerify, async(req, res) => {
 })
 
 router.post('/subsites', authVerify, async(req, res) =>{
+    console.log('pre body', req.body)
     try {
         const body = { ...req.body} //create a shallow copy of req.body - DO NOT MUTATE BODY DIRECTLY!!
-            if(body.lat == null || body.long == null){ // == catches both undefined and null
+            if(body.lat == null || body.long == null ){ // == catches both undefined and null
                 const addressInfo = {
                     address: body.address,
                     city: body.city,
@@ -41,7 +42,7 @@ router.post('/subsites', authVerify, async(req, res) =>{
             body.lat = lat
             body.long = long
         }
-        console.log('from the subsite route file', body)
+        console.log('post body', body)
         const site = await insertSubsite(body)
         res.status(201).json(site)
     } catch (error) {

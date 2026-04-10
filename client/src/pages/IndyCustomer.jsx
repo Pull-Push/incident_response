@@ -27,8 +27,8 @@ export default function IndyCustomer() {
             notes: '',
             contact: '',
             phone: '',
-            lat: '',
-            long:'',
+            lat: undefined,
+            long:undefined,
             name:''
         })
 
