@@ -74,7 +74,6 @@ export const getSubsites = async (customer_id) =>{
 }
 
 export const getIndySubsite = async (subsite_id) => {
-    console.log('after indy subsite, api.js subsite id is...', subsite_id) 
     const response = await fetch(`${API_BASE_URL}/api/subsite/${subsite_id}`, {
         headers:getAuthHeader()
     })

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import { getCustomer, getIncidents, updateCustomer, getSubsites, createSubsite, updateSubsite, deactivateSubsite } from '../services/api'
+import SiteMap from '../components/SiteMap'
 
 export default function IndyCustomer() {
     const { id } = useParams()
@@ -204,7 +205,7 @@ export default function IndyCustomer() {
                         </div>
                     )}
 
-
+                <SiteMap props={{mainLong: customer.long, mainLat: customer.lat, subsites: subsites}}/>
                 </div>
                 <div className="section">
                     <div className="section-header">
@@ -436,7 +437,6 @@ function SubsiteTable({subsites, subsiteForm, handleSubsiteChange, handleSubsite
                 <tbody>
                     {subsites.map(s =>(
                         <tr key={s.id}>
-                            {console.log('subsite id', s.id)}
                             <td>{s.name}</td>
                             <td>{s.address}</td>
                             <td>{s.city}</td>
