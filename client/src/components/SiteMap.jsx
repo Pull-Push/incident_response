@@ -9,7 +9,9 @@ export default function SiteMap({props}) {
         const mainLat = (props.mainLat? props.mainLat : 40.948)
         const subSites = props.subsites
 
+
         useEffect(() =>{
+            console.log('subsites are...', subSites)
             const timer = setTimeout(() => {
                 if (map.current) return
                 if (!mapContainer.current) return
@@ -20,7 +22,8 @@ export default function SiteMap({props}) {
                         zoom: 12
                     })
                 map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
-    
+                
+
                 const marker = new maplibregl.Marker({ 
                     color: "#EA4335",
                     draggable: true 
@@ -28,7 +31,7 @@ export default function SiteMap({props}) {
                     .setLngLat([mainLong, mainLat])
                     .addTo(map.current)
 
-                marker.on('click', () => {
+                marker.on('dragend', () => {
                     const lngLat = marker.getLngLat()
                     if (confirm('Open in Google Maps?')) {
                         window.open(
@@ -38,13 +41,25 @@ export default function SiteMap({props}) {
                         )
                     }
                 })
-
+                
+                // PROPER WAY TO DO MAP CLICK EVENTS! NEEDS TO BE map.currrent.on not map.on
+                map.current.on('click', (e) =>{
+                    // console.log('The map was clicked at ', e.lngLat)
+                    if(confirm('Open in Google Maps?')) {
+                        window.open(
+                            `https://www.google.com/maps/search/?api=1&query=${e.lngLat.lat},${e.lngLat.lng}`,
+                            '_blank',
+                            'noopener,noreferrer'
+                        )
+                    }
+                })
                 map.current.addControl(
                     new maplibregl.GeolocateControl({
                         positionOptions: { enableHighAccuracy: true },
                         trackUserLocation: true
                     })
                 )
+
             }, 100)
 
 
@@ -52,6 +67,7 @@ export default function SiteMap({props}) {
         clearTimeout(timer)
         map.current?.remove() }
     }, [mainLong, mainLat, subSites])
+
 
     return(
             <div className="map-section">
