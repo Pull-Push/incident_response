@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
-import { getCustomer, getIncidents, updateCustomer, getSubsites, createSubsite, updateSubsite, deactivateSubsite } from '../services/api'
+import { getCustomer, getIncidents, updateCustomer, getSubsites, createSubsite } from '../services/api'
 import SiteMap from '../components/SiteMap'
 
 export default function IndyCustomer() {
@@ -18,7 +18,6 @@ export default function IndyCustomer() {
     const [custInfo, setCustInfo] = useState(null)
     const [subsites, setSubsites ] = useState([])
     const [showSubsiteForm, setShowSubsiteForm ] = useState(false)
-    const [editingSubsite, setEditingSubsite ] = useState(null)
     const [subsiteForm, setSubsiteForm] = useState({
             customer_id: id,
             address: '',
@@ -80,11 +79,7 @@ export default function IndyCustomer() {
         setSubsiteForm(prev => ({...prev, [name]: type === 'checkbox' ? checked: value}))
     }
 
-    const handleSubsiteUpdateChange = (e) => {
-        const { name, value } = e.target
-        setEditingSubsite(prev => ({ ...prev, [name]: value }))
-    }
-    
+
     const handleSave = async () => {
         try {
             setSaving(true)
@@ -107,30 +102,6 @@ export default function IndyCustomer() {
         }finally{
             setSubsiteSaving(false)
             setShowSubsiteForm(false)
-        }
-    }
-
-    const handleSubsiteUpdate = async (subsite_id, updateInfo) => {
-        try {
-            setSubsiteSaving(true)
-            await updateSubsite(subsite_id, updateInfo)
-            loadSubsites(id)
-        } catch (error) {
-            setError(`Failed to update subsite: ${error.message}`)
-        }finally{
-            setSubsiteSaving(false)
-        }
-    }
-
-    const handleSubsiteDeactivate = async (subsite_id) => {
-        try {
-            setSubsiteSaving(true)
-            await deactivateSubsite(subsite_id)
-            loadSubsites(id)
-        } catch (error) {
-            setError(`Failed to deactivate subsite: ${error.message}`)
-        }finally{
-            setSubsiteSaving(false)
         }
     }
 
@@ -205,8 +176,8 @@ export default function IndyCustomer() {
                         </div>
                     )}
 
-                <SiteMap props={{mainLong: customer.long, mainLat: customer.lat, subsites: subsites}}/>
                 </div>
+                <SiteMap mainLong={customer.long} mainLat={customer.lat} subsites={subsites} />
                 <div className="section">
                     <div className="section-header">
                         <h2>Active Incidents ({activeIncidents.length})</h2>
@@ -351,9 +322,7 @@ export default function IndyCustomer() {
             </div>
             )}
         <SubsiteTable subsites = {subsites} subsiteForm={subsiteForm} handleSubsiteChange={handleSubsiteChange} handleSubsiteSubmit={handleSubsiteSubmit}
-                        handleSubsiteUpdate={handleSubsiteUpdate} handleSubsiteDeactivate={handleSubsiteDeactivate} showSubsiteForm={showSubsiteForm}
-                        setShowSubsiteForm={setShowSubsiteForm} editingSubsite={editingSubsite} setEditingSubsite={setEditingSubsite} subsiteLoading={subsiteLoading} 
-                        subsiteSaving={subsiteSaving} handleSubsiteUpdateChange={handleSubsiteUpdateChange}/>
+                        showSubsiteForm={showSubsiteForm} setShowSubsiteForm={setShowSubsiteForm} subsiteLoading={subsiteLoading} subsiteSaving={subsiteSaving}/>
             </div>
         </div>
     )

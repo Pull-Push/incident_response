@@ -6,6 +6,7 @@ import {
 	updateSubsite,
 	deactivateSubsite,
 } from "../services/api";
+import SiteMap from "../components/SiteMap";
 
 export default function IndySubsite() {
 	// PARAMS HAS TO MATCH WHAT IS PASSED TO ROUTE IN APP.JSX ie: <Route path='/subsite/:subsite_id'.... param has to be subsite_id
@@ -115,6 +116,8 @@ export default function IndySubsite() {
 						<h1>{subsite.name} Subsite</h1>
 						<p className="subtitle">{subsite.customer}</p>
 					</div>
+				</div>
+
 					<div className="detail-grid">
 						<div className="detail-card">
 							<h3>Address:</h3>
@@ -131,12 +134,12 @@ export default function IndySubsite() {
 							<p>{subsite.phone}</p>
 						</div>
 
-                        <div className="detail-card detail-card-wide">
+                        {subsite.notes && <div className="detail-card detail-card-wide">
                             <h3>Subsite Notes</h3>
                             <p>{subsite.notes}</p>
-                        </div>
+                        </div>}
 					</div>
-				</div>
+				<SiteMap mainLong={subsite.long} mainLat={subsite.lat}/>
 				{editMode ? (
         <form className="form-card">
         <div className="form-section">
@@ -198,7 +201,7 @@ export default function IndySubsite() {
             ):(
             <div className='action-buttons'> 
                 <button className='btn btn-sm' onClick={()=> toggleEdit()}>Edit Subsite</button>
-				<button className='btn btn-sm' onClick={handleDeactivate}>Deactive Subsite</button>
+				<button className='btn btn-sm' onClick={handleDeactivate}>Deactivate Subsite</button>
             </div>
             )}
 			</div>

@@ -2,45 +2,77 @@ import { useEffect, useRef } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-export default function SiteMap({props}) {
+export default function SiteMap({ mainLat, mainLong, subsites }) {
+        // console.log('props lat', mainLat)
         const mapContainer = useRef(null)
         const map = useRef(null)
-        const mainLong = (props.mainLong ? props.mainLong : -74.059)
-        const mainLat = (props.mainLat? props.mainLat : 40.948)
-        const subSites = props.subsites
+        const customerMainLong = (mainLong ? mainLong : null)
+        const customerMainLat = (mainLat ? mainLat : null)
+        const customerSubSites = subsites
+        // console.log('mainLong', mainLong)
+        // console.log('mainLat', mainLat)
 
 
         useEffect(() =>{
-            console.log('subsites are...', subSites)
             const timer = setTimeout(() => {
                 if (map.current) return
                 if (!mapContainer.current) return
+                
+                if(customerMainLat != null && customerMainLong != null){
                     map.current = new maplibregl.Map({
                         container: mapContainer.current,
                         style: 'https://tiles.openfreemap.org/styles/bright',
-                        center: [mainLong, mainLat],
+                        center: [customerMainLong, customerMainLat],
                         zoom: 12
                     })
-                map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
-                
-
-                const marker = new maplibregl.Marker({ 
-                    color: "#EA4335",
-                    draggable: true 
+                    map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
+                    
+                    const marker = new maplibregl.Marker({ 
+                        color: "#EA4335",
+                        draggable: true 
                     })
-                    .setLngLat([mainLong, mainLat])
+                    .setLngLat([customerMainLong, customerMainLat])
                     .addTo(map.current)
+                    
+                    marker.on('dragend', () => {
+                        const lngLat = marker.getLngLat()
+                        if (confirm('Open in Google Maps?')) {
+                            window.open(
+                                `https://www.google.com/maps/search/?api=1&query=${lngLat.lat},${lngLat.lng}`,
+                                '_blank',
+                                'noopener,noreferrer'
+                            )
+                        }
+                    })
+                    if (customerSubSites && customerSubSites.length > 0){
+                    customerSubSites.forEach(site => {
+                        if (!site.lat || !site.long) return
+                            const siteMarker = new maplibregl.Marker({ color: '#00D4FF', draggable:true })
+                                .setLngLat([site.long, site.lat])
+                                .addTo(map.current)
 
-                marker.on('dragend', () => {
-                    const lngLat = marker.getLngLat()
-                    if (confirm('Open in Google Maps?')) {
-                        window.open(
-                            `https://www.google.com/maps/search/?api=1&query=${lngLat.lat},${lngLat.lng}`,
-                            '_blank',
-                            'noopener,noreferrer'
-                        )
-                    }
-                })
+                        siteMarker.on('dragend', () => {
+                            const lngLat = siteMarker.getLngLat()
+                                if (confirm('Open in Google Maps?')) {
+                                    window.open(
+                                    `https://www.google.com/maps/search/?api=1&query=${lngLat.lat},${lngLat.lng}`,
+                                    '_blank',
+                                    'noopener,noreferrer'
+                                )
+                            }
+                        })
+                    })
+                }
+
+                }else{
+                    map.current = new maplibregl.Map({
+                        container: mapContainer.current,
+                        style: 'https://tiles.openfreemap.org/styles/bright',
+                        center: [-74.56, 40.07],
+                        zoom: 7
+                    })
+                    map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
+                }
                 
                 // PROPER WAY TO DO MAP CLICK EVENTS! NEEDS TO BE map.currrent.on not map.on
                 map.current.on('click', (e) =>{
@@ -64,9 +96,11 @@ export default function SiteMap({props}) {
 
 
     return () => { 
-        clearTimeout(timer)
-        map.current?.remove() }
-    }, [mainLong, mainLat, subSites])
+        clearTimeout(timer);
+        map.current?.remove(); 
+        map.current = null;
+    }
+    }, [mainLong, mainLat, subsites])
 
 
     return(
