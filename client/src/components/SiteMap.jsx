@@ -47,20 +47,9 @@ export default function SiteMap({ mainLat, mainLong, subsites }) {
                     if (customerSubSites && customerSubSites.length > 0){
                     customerSubSites.forEach(site => {
                         if (!site.lat || !site.long) return
-                            const siteMarker = new maplibregl.Marker({ color: '#00D4FF', draggable:true })
+                            new maplibregl.Marker({ color: '#00D4FF' })
                                 .setLngLat([site.long, site.lat])
                                 .addTo(map.current)
-
-                        siteMarker.on('dragend', () => {
-                            const lngLat = siteMarker.getLngLat()
-                                if (confirm('Open in Google Maps?')) {
-                                    window.open(
-                                    `https://www.google.com/maps/search/?api=1&query=${lngLat.lat},${lngLat.lng}`,
-                                    '_blank',
-                                    'noopener,noreferrer'
-                                )
-                            }
-                        })
                     })
                 }
 
