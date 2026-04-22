@@ -1,5 +1,6 @@
 export default function Weather({weather, location}){
     if(!location || !weather ) return null
+    
     const dayPeriods = weather.filter((_, i) => i % 2 === 0).slice(0, 4)
     const nightPeriods = weather.filter((_, i) => i % 2 !== 0).slice(0, 4)
     

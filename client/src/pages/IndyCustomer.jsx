@@ -3,11 +3,14 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import { getCustomer, getIncidents, updateCustomer, getSubsites, createSubsite } from '../services/api'
 import SiteMap from '../components/SiteMap'
+import Weather from '../components/Weather'
 
 export default function IndyCustomer() {
     const { id } = useParams()
     const navigate = useNavigate()
     const [customer, setCustomer] = useState(null)
+    const [weather, setWeather ] = useState(null)
+    const [location, setLocation ] = useState(null)
     const [incidents, setIncidents] = useState([])
     const [loading, setLoading] = useState(true)
     const [subsiteLoading, setSubsiteLoading ] = useState(false)
@@ -32,6 +35,7 @@ export default function IndyCustomer() {
             name:''
         })
 
+
     useEffect(() => {
         const load = async () => {
             try {
@@ -41,8 +45,10 @@ export default function IndyCustomer() {
                     getIncidents(),
                     getSubsites(id)
                 ])
-                setCustomer(customerData)
-                setCustInfo(customerData)
+                setCustomer(customerData.customer)
+                setWeather(customerData.weather.local)
+                setLocation(customerData.weather.locationInfo)
+                setCustInfo(customerData.customer)
                 setSubsites(subsiteData)
                 // Filter incidents belonging to this customer
                 setIncidents(allIncidents.filter(i => i.customer_id === parseInt(id)))
@@ -177,6 +183,7 @@ export default function IndyCustomer() {
                     )}
 
                 </div>
+                <Weather weather={weather} location={location} />
                 <SiteMap mainLong={customer.long} mainLat={customer.lat} subsites={subsites} />
                 <div className="section">
                     <div className="section-header">

@@ -2,7 +2,6 @@ const axios = require('axios')
 
 
 async function getLocalWeather(foundLocal){
-    console.log('weatherService Location', foundLocal)
     const local = []
     let setLoc = {
         lat:'40.948020935058594',
@@ -10,8 +9,8 @@ async function getLocalWeather(foundLocal){
         }
     if(foundLocal){
         setLoc ={
-        lat:'36.6441517',
-        lon:'-93.2170195'
+        lat:foundLocal.lat,
+        lon:foundLocal.long
         }
     }
 

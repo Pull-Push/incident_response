@@ -7,12 +7,15 @@ import {
 	deactivateSubsite,
 } from "../services/api";
 import SiteMap from "../components/SiteMap";
+import Weather from "../components/Weather";
 
 export default function IndySubsite() {
 	// PARAMS HAS TO MATCH WHAT IS PASSED TO ROUTE IN APP.JSX ie: <Route path='/subsite/:subsite_id'.... param has to be subsite_id
 	const {subsite_id} = useParams(); 
 	const navigate = useNavigate();
 	const [subsite, setSubsite] = useState(null);
+	const [weather, setWeather] = useState(null)
+	const [location, setLocation ] = useState(null)
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState(null);
@@ -24,8 +27,10 @@ export default function IndySubsite() {
 			try {
 				setLoading(true);
 				const data = await getIndySubsite(subsite_id);
-				setSubsite(data);
-				setSubsiteInfo(data);
+				setSubsite(data.site);
+				setWeather(data.weather.local)
+				setLocation(data.weather.locationInfo)
+				setSubsiteInfo(data.site);
 			} catch (error) {
 				setError(error.message);
 			} finally {
@@ -139,6 +144,7 @@ export default function IndySubsite() {
                             <p>{subsite.notes}</p>
                         </div>}
 					</div>
+				<Weather weather={weather} location={location} />
 				<SiteMap mainLong={subsite.long} mainLat={subsite.lat}/>
 				{editMode ? (
         <form className="form-card">

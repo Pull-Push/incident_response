@@ -3,8 +3,8 @@ const router = express.Router()
 const {getSubsites,getIndySubsite,  insertSubsite, updateSubsite, deactivateSubsite} = require('../services/subsiteService')
 const {authVerify } = require('../middleware/auth')
 const { getLatLon } = require('../services/mapService') 
-
-
+const {getLocalWeather} = require('../services/weatherService')
+//GET ALL SUBSITES
 router.get('/subsites/:customer_id', authVerify, async(req, res) =>{
     try {
         const sites = await getSubsites(req.params.customer_id)
@@ -15,19 +15,27 @@ router.get('/subsites/:customer_id', authVerify, async(req, res) =>{
     }
 })
 
+
+//GET SINGLE SUBSITE
 router.get('/subsite/:id', authVerify, async(req, res) => {
     // console.log('params id is....', req.params.id)
     try{
         const site = await getIndySubsite(req.params.id)
-        res.json(site)
+        if(!site) return res.status(404).json({error: 'Subsite not found'})
+
+        const weather  = await getLocalWeather(site)
+        
+        if(!weather) return res.status(404).json({error: 'Weather not found'})
+        
+            res.json({site, weather})
     }catch(error) {
         console.error(error)
         res.status(500).json({error: 'Failed to fetch subsite'})
     }
 })
 
+//CREATE SUBSITE
 router.post('/subsites', authVerify, async(req, res) =>{
-    console.log('pre body', req.body)
     try {
         const body = { ...req.body} //create a shallow copy of req.body - DO NOT MUTATE BODY DIRECTLY!!
             if(body.lat == null || body.long == null ){ // == catches both undefined and null
@@ -38,11 +46,9 @@ router.post('/subsites', authVerify, async(req, res) =>{
                     zip: body.zip
                 }
         const [lat, long] = await getLatLon(addressInfo)
-            console.log('lat', lat)
             body.lat = lat
             body.long = long
         }
-        console.log('post body', body)
         const site = await insertSubsite(body)
         res.status(201).json(site)
     } catch (error) {
@@ -51,6 +57,7 @@ router.post('/subsites', authVerify, async(req, res) =>{
     }
 })
 
+//EDIT SUBSITE
 router.patch('/subsites/:id', authVerify, async(req, res) =>{
     try {
         const site = await updateSubsite(req.params.id, req.body)
@@ -62,6 +69,7 @@ router.patch('/subsites/:id', authVerify, async(req, res) =>{
     }
 })
 
+//DEACTIVATE SUBSITE
 router.patch('/subsites/:id/deactivate', authVerify, async(req, res) =>{
     try {
         const site = await deactivateSubsite(req.params.id)

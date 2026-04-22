@@ -3,6 +3,7 @@ const router = express.Router()
 const { getCustomers, getIndyCustomer, insertCustomer, updateCustomer } = require('../services/customerService');
 const { getLatLon } = require('../services/mapService') 
 const {authVerify} = require('../middleware/auth')
+const { getLocalWeather } = require('../services/weatherService')
 
 //get all customers
 router.get('/customers', authVerify, async (req, res) =>{
@@ -19,7 +20,11 @@ router.get('/customers/:id', authVerify, async (req, res) =>{
     try {
         const customer = await getIndyCustomer(req.params.id)
         if(!customer) return res.status(404).json({error: 'Customer not found'})
-        res.json(customer)
+        
+        const weather  = await getLocalWeather(customer)
+        if(!weather) return res.status(404).json({error: 'Weather not found'})
+    
+        res.json({customer, weather})
     } catch (error) {
         console.error(error)
         res.status(500).json({error: 'Failed to fetch customer'})
