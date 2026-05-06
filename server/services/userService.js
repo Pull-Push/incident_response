@@ -39,6 +39,7 @@ async function insertUser(userData) {
     }
 }
 
+//update users
 async function updateUser(user_id, updateData) {
     try {
         const {first_name, last_name, position, is_manager, is_sales, is_service, employee_number, email, password, phone } = updateData
@@ -66,6 +67,7 @@ async function updateUser(user_id, updateData) {
     }
 }
 
+//soft delete users
 async function deactivateUser(user_id) {
     try {
         const result = await pool.query(
@@ -82,6 +84,7 @@ async function deactivateUser(user_id) {
     }
 }
 
+//get user by email
 async function getUserByEmail(email) {
     try{
         const result = await pool.query(
@@ -96,4 +99,47 @@ async function getUserByEmail(email) {
     }
 }
 
-module.exports = {getUsers, getIndyUser, insertUser, updateUser, deactivateUser, getUserByEmail}
+//get all managers
+async function getManagers() {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM users
+            WHERE is_manager = true`
+        )
+        return result.rows
+    } catch (error) {
+        console.error('Failed to fetch managers', error)
+        throw new Error(error)
+    }
+}
+
+//get service managers
+async function getServiceManagers() {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM users
+            WHERE is_manager = true AND is_service = true`
+        )
+        return result.rows
+    } catch (error) {
+        console.error('Failed to fetch service managers', error)
+        throw new Error(error)
+    }
+}
+
+//get sales managers
+async function getSalesManagers() {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM users
+            WHERE is_manager = true AND is_sales = true`
+        )
+        return result.rows
+    } catch (error) {
+        console.error('Failed to fetch sales managers', error)
+        throw new Error(error)
+    }
+}
+
+
+module.exports = {getUsers, getIndyUser, insertUser, updateUser, deactivateUser, getUserByEmail, getManagers, getServiceManagers, getSalesManagers}
