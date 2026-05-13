@@ -59,7 +59,7 @@ export default function IndyIncident() {
         if (!confirm('Mark this incident as complete?')) return
         try {
             setSaving(true)
-            const updated = await updateIncident(id, { status: 'complete' })
+            const updated = await updateIncident(id, { status: 'complete', notification_type:'status' })
             setIncident(updated)
         } catch (err) {
             setError(`Failed to update incident: ${err.message}`)
@@ -71,7 +71,7 @@ export default function IndyIncident() {
     const handleReopenIncident = async () => {
         try {
             setSaving(true)
-            const updated = await updateIncident(id, { status: 'open' })
+            const updated = await updateIncident(id, { status: 'open', notification_type:'status' })
             setIncident(updated)
         } catch (err) {
             setError(`Failed to update incident: ${err.message}`)
@@ -100,8 +100,16 @@ export default function IndyIncident() {
     const handleSave = async () => {
         try {
             setSaving(true)
-            const updated = await updateIncident(id, incidentInfo)
-            setIncident(updated)
+            if(incidentInfo.tech_assigned !== incident.tech_assigned){
+                const updated = await updateIncident(id, {...incidentInfo, notification_type:'assignment'})
+                setIncident(updated)
+            }else if(incidentInfo.status !== incident.status){
+                const updated = await updateIncident(id, {...incidentInfo, notification_type:'status'})
+                setIncident(updated)
+            }else{
+                const updated = await updateIncident(id, incidentInfo)
+                setIncident(updated)
+            }
             setEditMode(false)
         } catch (error) {
             setError(`Failed to update incident:${error.message}`)
